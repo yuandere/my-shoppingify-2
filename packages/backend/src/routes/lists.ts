@@ -18,31 +18,54 @@ lists
     }
     return c.json(lists);
   })
+  // if no item is provided, we just return the new list
   .post("/", async (c) => {
     const token = c.get("token");
+    const { item } = await c.req.json();
+    let newList = null;
     const supabase = createSupabaseServerClient(c.env as any, token);
-    const { data: listsCount, error: listsCountError } = await supabase
-      .from("lists")
-      .select("*")
-      .like("name", "%New List%")
-      .eq("user_id", c.get("user").id);
-    if (listsCountError) {
-      return c.json({ error: listsCountError.message }, 500);
+    try {
+      const { data: listsCount, error: listsCountError } = await supabase
+        .from("lists")
+        .select("*")
+        .like("name", "%New List%")
+        .eq("user_id", c.get("user").id);
+      if (listsCountError) {
+        return c.json({ error: listsCountError.message }, 500);
+      }
+      const match = listsCount[listsCount.length - 1].name.match(/\((\d+)\)/);
+      const newCount = match ? parseInt(match[1]) + 1 : 1;
+      const { data: lists, error } = await supabase
+        .from("lists")
+        .insert({
+          name: `New List (${newCount})`,
+          user_id: c.get("user").id,
+        })
+        .select("*")
+        .single();
+      newList = lists;
+    } catch (error: any) {
+      return c.json({ error: error.message }, 500);
+    } finally {
+      if (!item) return c.json(lists);
     }
-    const match = listsCount[listsCount.length - 1].name.match(/\((\d+)\)/);
-    const newCount = match ? parseInt(match[1]) + 1 : 1;
-    const { data: lists, error } = await supabase
-      .from("lists")
+    // if an item was provided, create a new list item then return the new list
+    const { data: listItems, error } = await supabase
+      .from("list_items")
       .insert({
-        name: `New List (${newCount})`,
+        name: item.name,
+        item_id: item.id,
         user_id: c.get("user").id,
+        list_id: newList.id,
+        ...(item.category_name && { category_name: item.category_name }),
       })
       .select("*")
       .single();
     if (error) {
+      console.error("error: ", error);
       return c.json({ error: error.message }, 500);
     }
-    return c.json(lists);
+    return c.json(newList);
   })
   .put("/:id", async (c) => {
     const { name, completed } = await c.req.json();

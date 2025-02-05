@@ -100,7 +100,7 @@ function SidebarCart({
         toast.error("Error updating list item");
         return;
       } finally {
-        console.log("API CALLED: Update quantity", listItemId, quantity);
+        console.log("listItemId:", listItemId, " Update quantity", quantity);
         setLastSyncedQuantities((prev) => ({
           ...prev,
           [listItemId]: quantity,
@@ -119,7 +119,7 @@ function SidebarCart({
         toast.error("Error updating list item");
         return;
       } finally {
-        console.log("API CALLED: Update checked", listItemId, checked);
+        console.log("listItemId:", listItemId, " Update checked", checked);
         setLastSyncedCheckedStates((prev) => ({
           ...prev,
           [listItemId]: checked,
@@ -128,7 +128,7 @@ function SidebarCart({
     },
     1000 // 1 second delay
   );
-  const handleChecked = (listItemId: number, checked: boolean) => {
+  const handleChangeChecked = (listItemId: number, checked: boolean) => {
     const currentChecked =
       localCheckedStates[listItemId] ??
       listItems?.find((listItem) => listItem.id === listItemId)?.checked;
@@ -386,7 +386,7 @@ function SidebarCart({
                           isExpanded={isExpanded}
                           onItemClick={handleItemClick}
                           itemId={listItem.id}
-                          handleChecked={handleChecked}
+                          handleChangeChecked={handleChangeChecked}
                           handleDeleteListItem={handleDeleteListItem}
                           handleChangeQuantity={handleChangeQuantity}
                           listQueryData={listQueryData}

@@ -42,9 +42,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import { deleteCategory, addCategory } from "@/lib/actions/categories";
 import { addItem, deleteItem, updateItem } from "@/lib/actions/items";
+import { createList } from "@/lib/actions/lists";
 import { queryClient } from "@/lib/queryClient";
 import { categoriesQueryOptions, itemsQueryOptions } from "@/lib/queryOptions";
-import type { Category, Item } from "@/types/dashboard";
+import type { Category, Item, ListsViewList } from "@/types/dashboard";
 import { itemSchema, ItemFormValues } from "@/types/schema";
 
 interface ISidebarInfoPane {
@@ -65,8 +66,7 @@ function SidebarInfoPane({ selectedItem, addingNewItem }: ISidebarInfoPane) {
   const [categories, setCategories] = useState(categoriesQuery.data);
   const [isAddingNewCategory, setIsAddingNewCategory] =
     useState<boolean>(false);
-  const [isSubmittingCategory, setIsSubmittingCategory] =
-    useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [newCategoryName, setNewCategoryName] = useState<string>("");
 
   const sidebarContext = useContext(SidebarContext);
@@ -128,6 +128,27 @@ function SidebarInfoPane({ selectedItem, addingNewItem }: ISidebarInfoPane) {
     } catch (error) {
       console.error(error);
       toast.error("Error deleting item");
+    }
+  };
+
+  const handleAddItemToNewList = async () => {
+    if (isSubmitting || !selectedItem) return;
+    setIsSubmitting(true);
+    let newList = null;
+    try {
+      const data = await createList(selectedItem);
+      console.log("New list created:", data);
+      newList = data as ListsViewList;
+    } catch (error) {
+      console.error(error);
+      toast.error("Error creating list");
+      return;
+    } finally {
+      await queryClient.invalidateQueries({ queryKey: ["lists"] });
+      sidebarContext?.setSelectedListId(newList?.id ?? null);
+      setIsSubmitting(false);
+      onClose();
+      toast.success("List created");
     }
   };
 
@@ -200,7 +221,7 @@ function SidebarInfoPane({ selectedItem, addingNewItem }: ISidebarInfoPane) {
           return;
         }
       }
-      setIsSubmittingCategory(true);
+      setIsSubmitting(true);
       try {
         const addedCategory = await onAddCategory(newCategoryName.trim());
         if (addedCategory) {
@@ -212,7 +233,7 @@ function SidebarInfoPane({ selectedItem, addingNewItem }: ISidebarInfoPane) {
         console.error("Failed to add category:", error);
         toast.error("Failed to add category");
       } finally {
-        setIsSubmittingCategory(false);
+        setIsSubmitting(false);
       }
     }
   };
@@ -455,11 +476,10 @@ function SidebarInfoPane({ selectedItem, addingNewItem }: ISidebarInfoPane) {
                                 <Button
                                   onClick={handleAddNewCategory}
                                   disabled={
-                                    isSubmittingCategory ||
-                                    !newCategoryName.trim()
+                                    isSubmitting || !newCategoryName.trim()
                                   }
                                 >
-                                  {isSubmittingCategory ? "Adding..." : "Add"}
+                                  {isSubmitting ? "Adding..." : "Add"}
                                 </Button>
                               </div>
                             ) : (
@@ -494,7 +514,14 @@ function SidebarInfoPane({ selectedItem, addingNewItem }: ISidebarInfoPane) {
               <Button
                 type="button"
                 className="w-full"
-                onClick={() => handleAddItemToList(form.getValues("id"))}
+                onClick={() => {
+                  if (!selectedItem) return;
+                  handleAddItemToList({
+                    itemId: selectedItem.id,
+                    itemName: selectedItem.name,
+                    category_name: selectedItem.category_name ?? undefined,
+                  });
+                }}
               >
                 Add to selected List
               </Button>
@@ -502,7 +529,7 @@ function SidebarInfoPane({ selectedItem, addingNewItem }: ISidebarInfoPane) {
               <Button
                 type="button"
                 className="w-full"
-                onClick={() => handleAddItemToList(form.getValues("id"))}
+                onClick={() => handleAddItemToNewList()}
               >
                 Add to new List
               </Button>

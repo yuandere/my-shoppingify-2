@@ -7,7 +7,7 @@ interface ICartListItemProps {
   isExpanded: boolean;
   onItemClick: (itemId: number) => void;
   itemId: number;
-  handleChecked: (listItemId: number, checked: boolean) => void;
+  handleChangeChecked: (listItemId: number, checked: boolean) => void;
   handleDeleteListItem: (listItemId: number) => void;
   handleChangeQuantity: (listItemId: number, quantity: number) => void;
   listQueryData: ListsViewList | undefined;
@@ -20,7 +20,7 @@ export default function CartListItem({
   isExpanded,
   onItemClick,
   itemId,
-  handleChecked,
+  handleChangeChecked,
   handleDeleteListItem,
   handleChangeQuantity,
   listQueryData,
@@ -51,7 +51,7 @@ export default function CartListItem({
                 className="rounded border-muted"
                 checked={checked}
                 onChange={(e) => {
-                  handleChecked(item.id, e.target.checked);
+                  handleChangeChecked(item.id, e.target.checked);
                 }}
               />
             </div>

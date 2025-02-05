@@ -1,5 +1,6 @@
 import axios from "redaxios";
 import { tokenHelper } from "../utils";
+import type { Item } from "@/types/dashboard";
 
 export const completeList = async (listId: string, completed: boolean) => {
   try {
@@ -16,13 +17,14 @@ export const completeList = async (listId: string, completed: boolean) => {
     throw error;
   }
 };
-export const createList = async () => {
+export const createList = async (item?: Item) => {
   try {
     const token = await tokenHelper();
     const { data } = await axios({
       method: "POST",
       url: import.meta.env.VITE_BACKEND_URL + "/api/v1/lists",
       headers: { Authorization: `Bearer ${token}` },
+      ...(item && { data: { item } }),
     });
     return data;
   } catch (error) {
