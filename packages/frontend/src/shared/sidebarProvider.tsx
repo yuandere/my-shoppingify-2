@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { SidebarContext } from "@/shared/SidebarContext";
 import { queryClient } from "@/lib/queryClient";
 import { createListItem } from "@/lib/actions/listItems";
+import { listItemsQueryOptions } from "@/lib/queryOptions";
 import type { ISidebarContext } from "@/shared/SidebarContext";
 import type { Item } from "@/types/dashboard";
 
@@ -30,7 +31,16 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
       return;
     }
     setAddingListItem(true);
-    // TODO: add check for existing list item
+    const listItems = await queryClient.fetchQuery(
+      listItemsQueryOptions(selectedListId)
+    );
+    for (const listItem of listItems) {
+      if (listItem.item_id === itemId) {
+        toast.error("Item already exists in list");
+        setAddingListItem(false);
+        return;
+      }
+    }
     try {
       await createListItem({
         itemId,
