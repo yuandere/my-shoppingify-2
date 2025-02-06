@@ -12,7 +12,7 @@ export type ListItem = {
   id: number;
   name: string;
   list_id: string;
-  item_id: string;
+  item_id: number;
   checked: boolean;
   quantity: number;
   // joined
