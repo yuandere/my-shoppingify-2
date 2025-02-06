@@ -137,7 +137,7 @@ function SidebarInfoPane({ selectedItem, addingNewItem }: ISidebarInfoPane) {
     let newList = null;
     try {
       const data = await createList(selectedItem);
-      console.log("New list created:", data);
+      // console.log("New list created:", data);
       newList = data as ListsViewList;
     } catch (error) {
       console.error(error);
@@ -156,12 +156,12 @@ function SidebarInfoPane({ selectedItem, addingNewItem }: ISidebarInfoPane) {
     if (!selectedItem) return;
     try {
       await updateItem(selectedItem.id, updatedData);
+      // console.log("Updated item submitted:", updatedData);
     } catch (error) {
       console.error(error);
       toast.error("Error updating item");
       return;
     }
-    console.log("Updated item submitted:", updatedData);
     queryClient.setQueryData(["items"], (oldData: Item[]) => {
       const newData = [];
       for (const item of oldData) {
@@ -177,23 +177,22 @@ function SidebarInfoPane({ selectedItem, addingNewItem }: ISidebarInfoPane) {
   };
   const onSubmitNewItem = async (newItemData: ItemFormValues) => {
     try {
-      const { data } = await addItem(newItemData);
-      console.log("new item", data);
-      await Promise.resolve(
-        queryClient.invalidateQueries({ queryKey: ["items"] })
-      );
+      await addItem(newItemData);
+    } catch (error) {
+      console.error(error);
+      toast.error("Error adding item");
+      return;
+    } finally {
+      await queryClient.invalidateQueries({ queryKey: ["items"] });
       setAddingNewItem(false);
       setSelecteditem(null);
       setInfoPaneOpen(false);
       toast.success("Item added");
-    } catch (error) {
-      console.error(error);
-      toast.error("Error adding item");
     }
   };
   const handleSubmit = (values: ItemFormValues) => {
     values.name = values.name.trim();
-    console.log("form values", values);
+    // console.log("form values", values);
     for (const item of itemsQuery.data) {
       if (item.name === values.name) {
         toast.error("Item with that name already exists");
@@ -253,13 +252,13 @@ function SidebarInfoPane({ selectedItem, addingNewItem }: ISidebarInfoPane) {
   const handleDeleteCategory = async (categoryId: number) => {
     try {
       await onDeleteCategory(categoryId);
-      Promise.resolve(queryClient.invalidateQueries({ queryKey: ["items"] }));
     } catch (error) {
       console.error(error);
       toast.error("Error deleting category");
       return;
+    } finally {
+      await queryClient.invalidateQueries({ queryKey: ["categories"] });
     }
-
     if (form.getValues("category_id") === categoryId) {
       form.setValue("category_name", "Uncategorized");
     }

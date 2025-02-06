@@ -100,7 +100,7 @@ function SidebarCart({
         toast.error("Error updating list item");
         return;
       } finally {
-        console.log("listItemId:", listItemId, " Update quantity", quantity);
+        // console.log("listItemId:", listItemId, " Update quantity", quantity);
         setLastSyncedQuantities((prev) => ({
           ...prev,
           [listItemId]: quantity,
@@ -119,7 +119,7 @@ function SidebarCart({
         toast.error("Error updating list item");
         return;
       } finally {
-        console.log("listItemId:", listItemId, " Update checked", checked);
+        // console.log("listItemId:", listItemId, " Update checked", checked);
         setLastSyncedCheckedStates((prev) => ({
           ...prev,
           [listItemId]: checked,
