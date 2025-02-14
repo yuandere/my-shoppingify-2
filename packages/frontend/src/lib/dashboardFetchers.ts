@@ -39,7 +39,8 @@ export const fetchLists = async () => {
     url: import.meta.env.VITE_BACKEND_URL + "/api/v1/lists",
     headers: { Authorization: `Bearer ${token}` },
   });
-  return data.map((list: ListsViewList) => ({
+  const lists = data as ListsViewList[];
+  return lists.map((list: ListsViewList) => ({
     ...list,
     created_at_formatted: dayjs(list.created_at).format("ll"),
     updated_at_formatted: dayjs(list.updated_at).format("ll"),
