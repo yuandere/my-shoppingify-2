@@ -1,4 +1,4 @@
-import { Link, Navigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import {
   ChartLine,
   ListCheck,
@@ -57,18 +57,17 @@ const navItems: NavItem[] = [
 export function NavBar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const isMobile = useIsMobile();
   const { logout } = useAuth();
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
       await logout();
+      navigate({ to: "/" });
     } catch (error) {
       console.error("Error logging out: ", error);
       const err = error as Error;
       const message = err.message || "Something went wrong";
       toast.error(message);
-      return;
-    } finally {
-      Navigate({ to: "/" });
     }
   };
 
