@@ -276,6 +276,7 @@ function SidebarInfoPane({ selectedItem, addingNewItem }: ISidebarInfoPane) {
           <form
             onSubmit={form.handleSubmit(handleSubmit)}
             className="space-y-4 flex flex-col"
+            autoComplete="off"
           >
             <FormField
               control={form.control}
