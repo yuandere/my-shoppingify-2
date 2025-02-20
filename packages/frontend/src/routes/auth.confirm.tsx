@@ -27,6 +27,5 @@ function RouteComponent() {
   if (auth.isAuthenticated) {
     Navigate({ to: "/items" });
   }
-
   return "Redirecting...";
 }

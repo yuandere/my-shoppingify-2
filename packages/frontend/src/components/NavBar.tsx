@@ -1,4 +1,4 @@
-import { Link, Navigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import {
   ChartLine,
   ListCheck,
@@ -37,19 +37,32 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { title: "Items", to: "/items", icon: ShoppingCart },
-  { title: "Lists", to: "/lists", icon: ListCheck },
-  { title: "Stats", to: "/stats", icon: ChartLine },
+  {
+    title: "Items",
+    to: "/items",
+    icon: ShoppingCart,
+  },
+  {
+    title: "Lists",
+    to: "/lists",
+    icon: ListCheck,
+  },
+  {
+    title: "Stats",
+    to: "/stats",
+    icon: ChartLine,
+  },
 ];
 
 export function NavBar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const isMobile = useIsMobile();
   const { logout } = useAuth();
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
       await logout();
-      Navigate({ to: "/" });
+      navigate({ to: "/" });
     } catch (error) {
       console.error("Error logging out: ", error);
       const err = error as Error;
@@ -57,6 +70,7 @@ export function NavBar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       toast.error(message);
     }
   };
+
   return (
     <Sidebar
       collapsible="none"
@@ -106,7 +120,9 @@ export function NavBar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarMenuButton asChild className="relative h-10 w-10">
               <Link
                 to={item.to}
-                activeProps={{ className: "bg-primary/10 text-primary" }}
+                activeProps={{
+                  className: "bg-primary/10 text-primary",
+                }}
                 className={
                   "flex h-10 w-10 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary"
                 }
