@@ -21,7 +21,8 @@ lists
   // if no item is provided, we just return the new list
   .post("/", async (c) => {
     const token = c.get("token");
-    const { item } = await c.req.json();
+    const body = await c.req.json();
+    const item = body?.item ?? null;
     let newList = null;
     const supabase = createSupabaseServerClient(c.env as any, token);
     try {
@@ -31,10 +32,21 @@ lists
         .like("name", "%New List%")
         .eq("user_id", c.get("user").id);
       if (listsCountError) {
+        console.error("Error fetching lists count:", listsCountError);
         return c.json({ error: listsCountError.message }, 500);
       }
-      const match = listsCount[listsCount.length - 1].name.match(/\((\d+)\)/);
-      const newCount = match ? parseInt(match[1]) + 1 : 1;
+      console.log("listsCount: ", listsCount);
+      
+      // Handle empty array case - start with "New List (1)"
+      let newCount = 1;
+      if (listsCount.length > 0) {
+        const lastList = listsCount[listsCount.length - 1];
+        const match = lastList.name.match(/\((\d+)\)/);
+        if (match) {
+          newCount = parseInt(match[1]) + 1;
+        }
+      }
+
       const { data: lists, error } = await supabase
         .from("lists")
         .insert({
@@ -43,11 +55,19 @@ lists
         })
         .select("*")
         .single();
+      
+      if (error) {
+        console.error("Error creating new list:", error);
+        throw error;
+      }
+      
       newList = lists;
+      console.log("newList: ", newList);
     } catch (error: any) {
+      console.error("Caught error in lists POST:", error);
       return c.json({ error: error.message }, 500);
     } finally {
-      if (!item) return c.json(lists);
+      if (!item) return c.json(newList);
     }
     // if an item was provided, create a new list item then return the new list
     const { data: listItems, error } = await supabase

@@ -24,7 +24,7 @@ export const createList = async (item?: Item) => {
       method: "POST",
       url: import.meta.env.VITE_BACKEND_URL + "/api/v1/lists",
       headers: { Authorization: `Bearer ${token}` },
-      ...(item && { data: { item } }),
+      data: { item: item || null },
     });
     return data;
   } catch (error) {
