@@ -6,7 +6,6 @@ import {
   SidebarInset,
   SidebarProvider as UISidebarProvider,
 } from "@/components/ui/sidebar";
-import { Toaster } from "@/components/ui/sonner";
 import { SidebarProvider } from "@/shared/sidebarProvider";
 import { SidebarRight } from "@/components/sidebar/SidebarRight";
 import { useIsMobile } from "@/hooks/useIsMobile";
@@ -31,18 +30,6 @@ export const Route = createFileRoute("/_auth")({
 
 function AuthLayout() {
   const isMobile = useIsMobile();
-  // const router = useRouter();
-  // const navigate = Route.useNavigate();
-
-  // const handleLogout = () => {
-  // 	if (window.confirm('Are you sure you want to logout?')) {
-  // 		auth.logout().then(() => {
-  // 			router.invalidate().finally(() => {
-  // 				navigate({ to: '/' });
-  // 			});
-  // 		});
-  // 	}
-  // };
 
   return (
     <SidebarProvider>
@@ -57,7 +44,6 @@ function AuthLayout() {
           </div>
         </SidebarInset>
         <SidebarRight />
-        <Toaster />
       </UISidebarProvider>
     </SidebarProvider>
   );

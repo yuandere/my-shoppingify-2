@@ -69,19 +69,18 @@ function RouteComponent() {
       const data = await createList();
       console.log(data);
       newList = data as ListsViewList;
-    } catch (e) {
-      console.error(e);
-      toast.error("Error creating list");
-      return;
-    } finally {
       await Promise.resolve(
         queryClient.invalidateQueries({ queryKey: ["lists"] })
       );
       sidebarContext?.setOpen(true);
       sidebarContext?.setInfoPaneOpen(false);
       sidebarContext?.setSelectedListId(newList?.id ?? null);
-      setIsCreatingList(false);
       toast.success("List created");
+    } catch (e) {
+      console.error('Error in handleCreateList:', e);
+      toast.error(e instanceof Error ? e.message : "Error creating list");
+    } finally {
+      setIsCreatingList(false);
     }
   };
 
@@ -126,6 +125,23 @@ function RouteComponent() {
       </header>
       <ScrollArea className="flex-1">
         <main className="flex-1 overflow-auto p-6">
+          {displayedLists.length === 0 && (
+            <div className="flex flex-col items-center justify-between h-auto rounded-md p-4 space-y-4">
+              <p>No lists found. Create a list?</p>
+              <Button
+                className="w-10 h-10 p-1 grid place-items-center border rounded-full transition-all hover:scale-[125%] hover:text-[var(--accent-color)]"
+                variant="ghost"
+                onClick={handleCreateList}
+                disabled={
+                  sidebarContext?.infoPaneOpen &&
+                  !sidebarContext?.addingNewItem &&
+                  !!sidebarContext?.selectedItem
+                }
+              >
+                <Plus />
+              </Button>
+            </div>
+          )}
           {displayedLists.map((list) => (
             <div
               key={`list-${list.id}`}

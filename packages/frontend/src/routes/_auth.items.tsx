@@ -87,10 +87,10 @@ function ItemsPage() {
         <div className="h-full p-6">
           <main>
             {displayedItems.length === 0 && (
-              <div className="flex flex-col items-center justify-between h-auto rounded-md border p-4 space-y-4">
+              <div className="flex flex-col items-center justify-between h-auto rounded-md p-4 space-y-4">
                 <p>No items found. Add an item?</p>
                 <Button
-                  className="w-4 h-4p-1 grid place-items-center border rounded-full transition-all hover:scale-[125%] hover:text-[var(--accent-color)]"
+                  className="w-10 h-10 p-1 grid place-items-center border rounded-full transition-all hover:scale-[125%] hover:text-[var(--accent-color)]"
                   variant="ghost"
                   onClick={sidebarContext?.handleAddingNewItem}
                   disabled={
