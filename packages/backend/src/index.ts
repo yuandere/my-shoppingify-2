@@ -1,12 +1,8 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
-import { decode, sign, verify } from "hono/jwt";
 import { logger } from "hono/logger";
-import { zValidator } from "@hono/zod-validator";
-import { createClient, SupabaseClient, User } from "@supabase/supabase-js";
-import { z } from "zod";
+import { createClient } from "@supabase/supabase-js";
 
-import { createSupabaseServerClient } from "./utils/supabase";
 import { authMiddleware } from "./middleware/auth";
 import { Bindings, Variables } from "./bindings";
 import items from "./routes/items";
@@ -20,30 +16,14 @@ app.use(logger());
 app.use(
   "/api/v1/*",
   cors({
-    origin: "*",
+    origin: (origin, c) => {
+      return origin.endsWith(c.env.FRONTEND_URL_SUFFIX)
+        ? origin
+        : "http://localhost:5173";
+    },
   })
 );
 app.use("/api/*", authMiddleware);
-app.get("/test", (c) => {
-  return c.json({
-    message: "test",
-  });
-});
-// app.get(
-// 	'/hello',
-// 	zValidator(
-// 		'query',
-// 		z.object({
-// 			name: z.string(),
-// 		})
-// 	),
-// 	(c) => {
-// 		const { name } = c.req.valid('query');
-// 		return c.json({
-// 			message: `Hello! ${name}`,
-// 		});
-// 	}
-// );
 
 app.delete("/api/v1/auth/delete", async (c) => {
   const token = c.get("token");
@@ -85,6 +65,7 @@ app.delete("/api/v1/auth/delete", async (c) => {
     );
   }
 });
+
 app.route("/api/v1/items", items);
 app.route("/api/v1/listItems", listItems);
 app.route("/api/v1/categories", categories);
