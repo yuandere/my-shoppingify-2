@@ -1,4 +1,8 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  useNavigate,
+  useRouter,
+} from "@tanstack/react-router";
 import axios from "redaxios";
 import { toast } from "sonner";
 
@@ -31,8 +35,9 @@ export const Route = createFileRoute("/_auth/settings")({
 });
 
 function RouteComponent() {
-  const { user } = useAuth();
+  const { user, handleStoreAuth } = useAuth();
   const navigate = useNavigate();
+  const router = useRouter();
 
   const deleteAccount = async () => {
     try {
@@ -49,6 +54,8 @@ function RouteComponent() {
         navigate({ to: "/" });
       }, 2000);
       clearLocalStorage();
+      handleStoreAuth(null);
+      router.invalidate();
     } catch (error) {
       console.error(error);
       toast.error("Error deleting account");
@@ -65,42 +72,59 @@ function RouteComponent() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <div className="text-sm text-muted-foreground">Email</div>
-              <div>{user?.email}</div>
+              {user?.email ? (
+                <>
+                  <div className="text-sm text-muted-foreground">Email</div>
+                  <div>{user?.email}</div>
+                </>
+              ) : (
+                <div className="text-sm text-muted-foreground">DEMO</div>
+              )}
             </div>
           </CardContent>
         </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Danger Zone</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button variant="destructive">Delete Account</Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This action cannot be undone. This will permanently delete
-                    your account.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={deleteAccount}>
-                    Continue
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-            {/* <Button variant="destructive" onClick={deleteAccount}>
-              Delete Account
-            </Button> */}
-          </CardContent>
-        </Card>
+        {user?.is_anonymous ? (
+          <Card>
+            <CardHeader>
+              <CardTitle>Danger Zone</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Button variant="destructive" onClick={deleteAccount}>
+                Leave Demo
+              </Button>
+            </CardContent>
+          </Card>
+        ) : (
+          <Card>
+            <CardHeader>
+              <CardTitle>Danger Zone</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive">Delete Account</Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Are you absolutely sure?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. This will permanently delete
+                      your account.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={deleteAccount}>
+                      Continue
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );

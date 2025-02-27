@@ -11,7 +11,7 @@ listItems
     const supabase = createSupabaseServerClient(c.env as any, token);
     const { data: listItems, error } = await supabase
       .from("list_items")
-      .select(`id, name, list_id, item_id, checked, quantity`)
+      .select(`id, name, list_id, item_id, checked, quantity, category_name`)
       .eq("list_id", c.req.param("id"));
     if (error) {
       console.error("error: ", error);
