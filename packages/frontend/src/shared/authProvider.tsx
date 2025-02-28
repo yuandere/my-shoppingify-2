@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { supabase } from "@/shared/supabaseClient";
 import { AuthContext } from "./AuthContext";
+import { isDateAtLeast24HoursOld } from "@/lib/utils";
 import { demo_categories, demo_items, demo_lists } from "@/lib/demo-data";
 
 const useAuthQuery = () => {
@@ -84,9 +85,9 @@ const populateDemoData = async (userId: string) => {
         user_id: userId,
         category_name: itemMap.get(itemName)?.category_name ?? null,
       }));
-			const { error: listItemError } = await supabase
+      const { error: listItemError } = await supabase
         .from("list_items")
-        .insert(listItems)
+        .insert(listItems);
       if (listItemError) throw listItemError;
     }
   } catch (error) {
@@ -172,8 +173,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log("AUTHEVENT", event);
-      console.log("AUTHSESSION", session);
+      //console.log("AUTHEVENT", event);
+      //console.log("AUTHSESSION", session);
+      if (session?.user?.is_anonymous) {
+        const createdAt = session?.user?.created_at;
+        if (createdAt && isDateAtLeast24HoursOld(createdAt)) {
+          handleStoreAuth(null);
+          clearLocalStorage();
+          return;
+        }
+      }
       handleStoreAuth(session?.user ?? null);
       if (event === "INITIAL_SESSION") {
         // handle initial session
