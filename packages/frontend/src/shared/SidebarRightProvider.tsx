@@ -1,14 +1,18 @@
 import { useState } from "react";
 import { toast } from "sonner";
 
-import { SidebarContext } from "@/shared/SidebarContext";
+import { SidebarRightContext } from "@/shared/SidebarRightContext";
 import { queryClient } from "@/lib/queryClient";
 import { createListItem } from "@/lib/actions/listItems";
 import { listItemsQueryOptions } from "@/lib/queryOptions";
-import type { ISidebarContext } from "@/shared/SidebarContext";
+import type { ISidebarRightContext } from "@/shared/SidebarRightContext";
 import type { Item } from "@/types/dashboard";
 
-export function SidebarProvider({ children }: { children: React.ReactNode }) {
+export function SidebarRightProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [open, setOpen] = useState(false);
   const [infoPaneOpen, setInfoPaneOpen] = useState<boolean>(false);
   const [addingNewItem, setAddingNewItem] = useState(false);
@@ -67,7 +71,7 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
     setOpen(true);
   };
 
-  const contextValue: ISidebarContext = {
+  const contextValue: ISidebarRightContext = {
     open,
     setOpen,
     infoPaneOpen,
@@ -82,8 +86,8 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
     handleAddingNewItem,
   };
   return (
-    <SidebarContext.Provider value={contextValue}>
+    <SidebarRightContext.Provider value={contextValue}>
       {children}
-    </SidebarContext.Provider>
+    </SidebarRightContext.Provider>
   );
 }

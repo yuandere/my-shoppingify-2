@@ -76,7 +76,7 @@ export function NavBar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       collapsible="none"
       className={clsx(
         "flex flex-col",
-        !isMobile && "w-14 h-screen border-r",
+        !isMobile && "w-14 h-screen border-r shrink-0",
         isMobile &&
           "absolute z-10 left-0 bottom-0 w-screen h-14 border-t flex-row"
       )}
@@ -111,7 +111,7 @@ export function NavBar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
       <SidebarContent
         className={clsx(
-          "flex flex-col items-center justify-center gap-4",
+          "flex flex-col items-center justify-center gap-4 [&_li]:list-none",
           isMobile && "flex-row"
         )}
       >

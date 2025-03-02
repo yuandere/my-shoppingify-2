@@ -8,7 +8,7 @@ interface IHandleAddItemToList {
   category_name?: string | null;
 }
 
-export interface ISidebarContext {
+export interface ISidebarRightContext {
   open: boolean;
   setOpen: (open: boolean) => void;
   infoPaneOpen: boolean;
@@ -23,4 +23,6 @@ export interface ISidebarContext {
   handleAddingNewItem: () => void;
 }
 
-export const SidebarContext = createContext<ISidebarContext | null>(null);
+export const SidebarRightContext = createContext<ISidebarRightContext | null>(
+  null
+);

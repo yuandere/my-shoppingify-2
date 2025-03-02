@@ -55,9 +55,9 @@ export function InnerApp() {
   }
 
   return (
-    <>
+    <div className="h-screen w-screen">
       <RouterProvider router={router} context={{ auth }} />
-    </>
+    </div>
   );
 }
 

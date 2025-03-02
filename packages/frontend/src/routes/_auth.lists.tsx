@@ -12,7 +12,9 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { queryClient } from "@/lib/queryClient";
 import { Input } from "@/components/ui/input";
-import { SidebarContext } from "@/shared/SidebarContext";
+import PendingComponent from "@/components/PendingComponent";
+import { SidebarRightContext } from "@/shared/SidebarRightContext";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { listsQueryOptions, listItemsQueryOptions } from "@/lib/queryOptions";
 import { createList } from "@/lib/actions/lists";
 import type { ListsViewList } from "@/types/dashboard";
@@ -37,6 +39,7 @@ export const Route = createFileRoute("/_auth/lists")({
   loader: async (options) => {
     return options.context.queryClient.ensureQueryData(listsQueryOptions());
   },
+  pendingComponent: () => PendingComponent(),
 });
 
 const sortLists = (lists: ListsViewList[], searchTerm: string) => {
@@ -52,7 +55,8 @@ const sortLists = (lists: ListsViewList[], searchTerm: string) => {
 };
 
 function RouteComponent() {
-  const sidebarContext = React.useContext(SidebarContext);
+  const isMobile = useIsMobile();
+  const sidebarRightContext = React.useContext(SidebarRightContext);
   const [isCreatingList, setIsCreatingList] = React.useState(false);
   const { data } = useSuspenseQuery(listsQueryOptions());
   const [searchTerm, setSearchTerm] = React.useState<string>("");
@@ -72,12 +76,12 @@ function RouteComponent() {
       await Promise.resolve(
         queryClient.invalidateQueries({ queryKey: ["lists"] })
       );
-      sidebarContext?.setOpen(true);
-      sidebarContext?.setInfoPaneOpen(false);
-      sidebarContext?.setSelectedListId(newList?.id ?? null);
+      sidebarRightContext?.setOpen(true);
+      sidebarRightContext?.setInfoPaneOpen(false);
+      sidebarRightContext?.setSelectedListId(newList?.id ?? null);
       toast.success("List created");
     } catch (e) {
-      console.error('Error in handleCreateList:', e);
+      console.error("Error in handleCreateList:", e);
       toast.error(e instanceof Error ? e.message : "Error creating list");
     } finally {
       setIsCreatingList(false);
@@ -86,10 +90,10 @@ function RouteComponent() {
 
   const handleListClick = (listId: string) => {
     console.log("list clicked", listId);
-    if (sidebarContext) {
-      sidebarContext.setOpen(true);
-      sidebarContext.setInfoPaneOpen(false);
-      sidebarContext.setSelectedListId(listId);
+    if (sidebarRightContext) {
+      sidebarRightContext.setOpen(true);
+      sidebarRightContext.setInfoPaneOpen(false);
+      sidebarRightContext.setSelectedListId(listId);
     }
   };
 
@@ -115,9 +119,9 @@ function RouteComponent() {
           size={"icon"}
           onClick={handleCreateList}
           disabled={
-            sidebarContext?.infoPaneOpen &&
-            !sidebarContext?.addingNewItem &&
-            !!sidebarContext?.selectedItem
+            sidebarRightContext?.infoPaneOpen &&
+            !sidebarRightContext?.addingNewItem &&
+            !!sidebarRightContext?.selectedItem
           }
         >
           <Plus />
@@ -133,9 +137,9 @@ function RouteComponent() {
                 variant="ghost"
                 onClick={handleCreateList}
                 disabled={
-                  sidebarContext?.infoPaneOpen &&
-                  !sidebarContext?.addingNewItem &&
-                  !!sidebarContext?.selectedItem
+                  sidebarRightContext?.infoPaneOpen &&
+                  !sidebarRightContext?.addingNewItem &&
+                  !!sidebarRightContext?.selectedItem
                 }
               >
                 <Plus />
@@ -159,6 +163,7 @@ function RouteComponent() {
               <p className="">{list.completed ? "Complete" : "Incomplete"}</p>
             </div>
           ))}
+          {isMobile && <div className="h-8" />}
         </main>
       </ScrollArea>
     </div>

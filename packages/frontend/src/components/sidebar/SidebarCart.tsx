@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { SidebarContext } from "@/shared/SidebarContext";
+import { SidebarRightContext } from "@/shared/SidebarRightContext";
 import CartListItem from "./CartListItem";
 import { queryClient } from "@/lib/queryClient";
 import { listsQueryOptions, listItemsQueryOptions } from "@/lib/queryOptions";
@@ -50,7 +50,7 @@ function SidebarCart({
   setInfoPaneOpen,
   setAddingNewItem,
 }: ISidebarCart) {
-  const sideBarContext = useContext(SidebarContext);
+  const sidebarRightContext = useContext(SidebarRightContext);
   const pathname = useLocation({ select: (location) => location.pathname });
   const listQuery = useSuspenseQuery(listsQueryOptions());
   const listQueryData = listQuery.data?.find((list) => list.id === listId);
@@ -188,7 +188,7 @@ function SidebarCart({
       await Promise.resolve(
         queryClient.invalidateQueries({ queryKey: ["lists"] })
       );
-      sideBarContext?.setSelectedListId(null);
+      sidebarRightContext?.setSelectedListId(null);
       toast.success("List deleted");
     }
   };

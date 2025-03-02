@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 
-import { SidebarContext } from "@/shared/SidebarContext";
+import { SidebarRightContext } from "@/shared/SidebarRightContext";
 import { Button } from "@/components/ui/button";
 import { Sidebar, SidebarContent } from "@/components/ui/sidebar";
 import { queryClient } from "@/lib/queryClient";
@@ -17,18 +17,18 @@ export function SidebarRight({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
   const [isCreatingList, setIsCreatingList] = useState(false);
-  const sideBarContext = useContext(SidebarContext);
-  //const open = sideBarContext?.open || false;
-  const setOpen = sideBarContext?.setOpen || (() => {});
-  const infoPaneOpen = sideBarContext?.infoPaneOpen || false;
-  const setInfoPaneOpen = sideBarContext?.setInfoPaneOpen || (() => {});
-  const addingNewItem = sideBarContext?.addingNewItem || false;
-  const setAddingNewItem = sideBarContext?.setAddingNewItem || (() => {});
-  const selectedItem = sideBarContext?.selectedItem || null;
-  const selectedListId = sideBarContext?.selectedListId || null;
+  const sideBarRightContext = useContext(SidebarRightContext);
+  //const open = sideBarRightContext?.open || false;
+  const setOpen = sideBarRightContext?.setOpen || (() => {});
+  const infoPaneOpen = sideBarRightContext?.infoPaneOpen || false;
+  const setInfoPaneOpen = sideBarRightContext?.setInfoPaneOpen || (() => {});
+  const addingNewItem = sideBarRightContext?.addingNewItem || false;
+  const setAddingNewItem = sideBarRightContext?.setAddingNewItem || (() => {});
+  const selectedItem = sideBarRightContext?.selectedItem || null;
+  const selectedListId = sideBarRightContext?.selectedListId || null;
   const [listId, setListId] = useState<string | null>(selectedListId);
-  const setSelectedListId = sideBarContext?.setSelectedListId || (() => {});
-  const handleAddingNewItem = sideBarContext?.handleAddingNewItem || (() => {});
+  const setSelectedListId = sideBarRightContext?.setSelectedListId || (() => {});
+  const handleAddingNewItem = sideBarRightContext?.handleAddingNewItem || (() => {});
 
   useEffect(() => {
     setListId(selectedListId);
@@ -60,9 +60,10 @@ export function SidebarRight({
 
   return (
     <Sidebar
-      className="w-[320px] border-l"
+      className="border-l shrink-0"
       side="right"
       collapsible="offcanvas"
+      variant="inset"
       {...props}
     >
       {infoPaneOpen ? (
