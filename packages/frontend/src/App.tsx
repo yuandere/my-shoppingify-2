@@ -7,11 +7,11 @@ import {
 } from "@tanstack/react-router";
 
 import { routeTree } from "./routeTree.gen";
+import PendingComponent from "./components/PendingComponent";
 import { AuthProvider } from "@/shared/authProvider";
 import { useAuth } from "./hooks/useAuth";
 import { createIDBPersister } from "./lib/createIDBpersister";
 import { queryClient } from "./lib/queryClient";
-import { Spinner } from "./components/Spinner";
 
 const persister = createIDBPersister();
 
@@ -22,11 +22,7 @@ const router = createRouter({
     queryClient: queryClient,
   },
   defaultErrorComponent: ({ error }) => <ErrorComponent error={error} />,
-  defaultPendingComponent: () => (
-    <div className="p-2 text-2xl">
-      <Spinner />
-    </div>
-  ),
+  defaultPendingComponent: () => <PendingComponent />,
   defaultNotFoundComponent: () => (
     <div>
       <p>404 Not Found</p>
@@ -47,15 +43,11 @@ export function InnerApp() {
   const auth = useAuth();
 
   if (auth.isInitializing) {
-    return (
-      <div className="min-h-screen w-screen flex items-center justify-center">
-        <h1>Loading...</h1>
-      </div>
-    );
+    return <PendingComponent />;
   }
 
   return (
-    <div className="h-screen w-screen">
+    <div className="h-screen w-screen bg-background">
       <RouterProvider router={router} context={{ auth }} />
     </div>
   );

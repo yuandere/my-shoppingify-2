@@ -11,7 +11,6 @@ import { SidebarRightContext } from "@/shared/SidebarRightContext";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import PendingComponent from "@/components/PendingComponent";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { sortItems } from "@/lib/utils";
 import { itemsQueryOptions } from "@/lib/queryOptions";
@@ -37,7 +36,6 @@ export const Route = createFileRoute("/_auth/items")({
   loader: async (options) => {
     return options.context.queryClient.ensureQueryData(itemsQueryOptions());
   },
-  pendingComponent: () => PendingComponent(),
 });
 
 function ItemsPage() {

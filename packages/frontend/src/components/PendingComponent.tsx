@@ -1,10 +1,17 @@
+import { clsx } from "clsx";
 import { Spinner } from "./Spinner";
 
 function PendingComponent() {
+  const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
   return (
-    <div className="flex items-center justify-between h-auto rounded-md border p-6">
-      <p className="text-lg mr-4">Loading...</p>
-      <Spinner />
+    <div
+      className={clsx(
+        "w-screen h-screen flex items-center justify-center bg-background",
+        isDarkMode && "bg-[hsl(0,0%,3.9%)]"
+      )}
+    >
+      <p className={clsx("mr-4", isDarkMode && "text-white")}>Loading...</p>
+      <Spinner dark={isDarkMode} />
     </div>
   );
 }

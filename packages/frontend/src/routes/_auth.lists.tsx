@@ -12,7 +12,6 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { queryClient } from "@/lib/queryClient";
 import { Input } from "@/components/ui/input";
-import PendingComponent from "@/components/PendingComponent";
 import { SidebarRightContext } from "@/shared/SidebarRightContext";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { listsQueryOptions, listItemsQueryOptions } from "@/lib/queryOptions";
@@ -39,7 +38,6 @@ export const Route = createFileRoute("/_auth/lists")({
   loader: async (options) => {
     return options.context.queryClient.ensureQueryData(listsQueryOptions());
   },
-  pendingComponent: () => PendingComponent(),
 });
 
 const sortLists = (lists: ListsViewList[], searchTerm: string) => {
