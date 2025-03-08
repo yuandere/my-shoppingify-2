@@ -59,6 +59,9 @@ function ItemsPage() {
     sidebarRightContext.setAddingNewItem(false);
     sidebarRightContext.setInfoPaneOpen(true);
     sidebarRightContext.setOpen(true);
+    if (isMobile) {
+      sidebarRightContext?.flashCart();
+    }
   };
 
   return (
@@ -142,6 +145,9 @@ function ItemsPage() {
                             itemName: item.name,
                             category_name: item.category_name ?? undefined,
                           });
+                          if (isMobile) {
+                            sidebarRightContext?.flashCart();
+                          }
                         }}
                       >
                         <Plus />

@@ -2,8 +2,8 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import {
   ChartLine,
   ListCheck,
-  ShoppingCart,
   Settings,
+  SquareMousePointer,
   LogOut,
   type LucideIcon,
 } from "lucide-react";
@@ -40,7 +40,7 @@ const navItems: NavItem[] = [
   {
     title: "Items",
     to: "/items",
-    icon: ShoppingCart,
+    icon: SquareMousePointer,
   },
   {
     title: "Lists",
@@ -82,15 +82,25 @@ export function NavBar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       )}
       {...props}
     >
-      <SidebarHeader className={clsx("flex", isMobile && "flex-row")}>
+      <SidebarHeader
+        className={clsx(
+          "flex items-center justify-center",
+          isMobile && "flex-row"
+        )}
+      >
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Avatar className="cursor-pointer">
+            <Avatar className="cursor-pointer grid place-items-center">
               {/* <AvatarImage src="" /> */}
-              <AvatarFallback>MS</AvatarFallback>
+              <AvatarFallback className="text-3xl">🤩</AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
+            {isMobile && (
+              <DropdownMenuItem asChild>
+                <ThemeToggle />
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem asChild>
               <Link to="/settings" className="flex items-center gap-2">
                 <Settings className="size-4" />
@@ -106,12 +116,12 @@ export function NavBar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-        <ThemeToggle />
+        {!isMobile && <ThemeToggle />}
       </SidebarHeader>
 
       <SidebarContent
         className={clsx(
-          "flex flex-col items-center justify-center gap-4 [&_li]:list-none",
+          "flex flex-col items-center justify-center justify-items-center gap-4 [&_li]:list-none",
           isMobile && "flex-row"
         )}
       >
@@ -124,17 +134,17 @@ export function NavBar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   className: "bg-primary/10 text-primary",
                 }}
                 className={
-                  "flex h-10 w-10 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary"
+                  "grid place-items-center h-10 w-10 rounded-md text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary"
                 }
               >
                 {({ isActive }) => (
-                  <>
+                  <div className="flex items-center justify-items-center">
                     <item.icon className="h-5 w-5" />
                     <span className="sr-only">{item.title}</span>
                     {isActive && (
                       <span className="absolute inset-x-0 -bottom-px h-[2px] bg-primary" />
                     )}
-                  </>
+                  </div>
                 )}
               </Link>
             </SidebarMenuButton>
@@ -142,7 +152,12 @@ export function NavBar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         ))}
       </SidebarContent>
 
-      <SidebarFooter className={clsx("pb-4 flex", isMobile && "flex-row")}>
+      <SidebarFooter
+        className={clsx(
+          "pb-4 flex items-center justify-center",
+          isMobile && "flex-row"
+        )}
+      >
         <CartButton />
       </SidebarFooter>
     </Sidebar>

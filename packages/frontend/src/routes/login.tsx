@@ -92,7 +92,6 @@ function LoginComponent() {
   return (
     <div className="h-full w-full p-2 grid place-items-center bg-background">
       <div className="flex flex-col items-center space-y-4">
-        <h3 className="text-xl">Register/Login page</h3>
         {search.redirect ? (
           <p className="text-red-500">You need to login to access this page.</p>
         ) : (

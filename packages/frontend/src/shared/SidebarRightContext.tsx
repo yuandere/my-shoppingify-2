@@ -2,25 +2,24 @@ import { createContext } from "react";
 
 import type { Item } from "@/types/dashboard";
 
-interface IHandleAddItemToList {
-  itemId: number;
-  itemName: string;
-  category_name?: string | null;
-}
-
 export interface ISidebarRightContext {
   open: boolean;
   setOpen: (open: boolean) => void;
   infoPaneOpen: boolean;
   setInfoPaneOpen: (open: boolean) => void;
   addingNewItem: boolean;
-  setAddingNewItem: (isAddingNewItem: boolean) => void;
-  selectedItem: null | Item;
-  setSelectedItem: React.Dispatch<React.SetStateAction<null | Item>>;
-  selectedListId: null | string;
-  setSelectedListId: React.Dispatch<React.SetStateAction<null | string>>;
-  handleAddItemToList: (data: IHandleAddItemToList) => void;
+  setAddingNewItem: (adding: boolean) => void;
+  selectedItem: Item | null;
+  setSelectedItem: (item: Item | null) => void;
+  selectedListId: string | null;
+  setSelectedListId: (id: string | null) => void;
+  handleAddItemToList: (params: {
+    itemId: number;
+    itemName: string;
+    category_name?: string | null;
+  }) => Promise<void>;
   handleAddingNewItem: () => void;
+  flashCart: () => void;
 }
 
 export const SidebarRightContext = createContext<ISidebarRightContext | null>(

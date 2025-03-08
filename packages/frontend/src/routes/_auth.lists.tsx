@@ -83,15 +83,20 @@ function RouteComponent() {
       toast.error(e instanceof Error ? e.message : "Error creating list");
     } finally {
       setIsCreatingList(false);
+      if (isMobile) {
+        sidebarRightContext?.flashCart();
+      }
     }
   };
 
   const handleListClick = (listId: string) => {
-    console.log("list clicked", listId);
     if (sidebarRightContext) {
       sidebarRightContext.setOpen(true);
       sidebarRightContext.setInfoPaneOpen(false);
       sidebarRightContext.setSelectedListId(listId);
+      if (isMobile) {
+        sidebarRightContext?.flashCart();
+      }
     }
   };
 

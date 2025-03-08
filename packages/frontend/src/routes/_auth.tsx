@@ -52,7 +52,7 @@ function AuthLayout() {
           <div
             className={clsx(
               "absolute bottom-8 w-fit left-0 right-0 mx-auto",
-              isMobile && "bottom-24"
+              isMobile && "bottom-32"
             )}
           >
             <div className="flex items-center gap-2 opacity-50">

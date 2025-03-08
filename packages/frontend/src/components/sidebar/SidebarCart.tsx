@@ -1,9 +1,10 @@
 import { useMemo, useState, useEffect, useCallback, useContext } from "react";
+import clsx from "clsx";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, useLocation } from "@tanstack/react-router";
-import { useDebouncedCallback } from "use-debounce";
 import { Check } from "lucide-react";
 import { toast } from "sonner";
+import { useDebouncedCallback } from "use-debounce";
 
 import {
   AlertDialog,
@@ -28,14 +29,15 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { SidebarRightContext } from "@/shared/SidebarRightContext";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import CartListItem from "./CartListItem";
 import { queryClient } from "@/lib/queryClient";
 import { listsQueryOptions, listItemsQueryOptions } from "@/lib/queryOptions";
 import { renameList, deleteList, completeList } from "@/lib/actions/lists";
 import { deleteListItem, updateListItem } from "@/lib/actions/listItems";
 import type { ListItem } from "@/types/dashboard";
-import { ScrollArea } from "../ui/scroll-area";
 
 type CategoryObj = { category_name: string; listItems: ListItem[] };
 
@@ -50,6 +52,7 @@ function SidebarCart({
   setInfoPaneOpen,
   setAddingNewItem,
 }: ISidebarCart) {
+  const isMobile = useIsMobile();
   const sidebarRightContext = useContext(SidebarRightContext);
   const pathname = useLocation({ select: (location) => location.pathname });
   const listQuery = useSuspenseQuery(listsQueryOptions());
@@ -291,162 +294,167 @@ function SidebarCart({
 
   return (
     <div className="p-4">
-      <>
-        <div className="mb-6 rounded-xl bg-[#8B4F65] p-4 text-white">
-          <div className="mb-2 flex items-start justify-between">
-            <div className="h-12 w-12">🍾</div>
-            <div className="text-right">
-              <div className="mb-1">Didn't find what you need?</div>
-              <Button
-                onClick={() => {
-                  setInfoPaneOpen(true);
-                  setAddingNewItem(true);
-                }}
-                size="sm"
-                variant="secondary"
-              >
-                Add item
-              </Button>
-            </div>
-          </div>
-        </div>
-        <div className="mb-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            {listQueryData?.completed && (
-              <Check className="h-4 w-4 text-green-500" />
-            )}
-            <h2
-              className={`text-xl font-semibold ${listQueryData?.completed ? "text-muted-foreground" : ""}`}
-            >
-              {listQueryData?.name || "Shopping List"}
-            </h2>
-          </div>
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="ghost" size="icon">
-                ✏️
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Edit list name</DialogTitle>
-                <DialogDescription>
-                  Rename your list here and click save when done
-                </DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="name" className="text-right">
-                    List name
-                  </Label>
-                  <Input
-                    id="name"
-                    value={
-                      newListName !== "" ? newListName : listQueryData?.name
-                    }
-                    className="col-span-3"
-                    onChange={(e) => setNewListName(e.target.value)}
-                    onAbort={() => {
-                      setNewListName("");
-                    }}
-                  />
-                </div>
-              </div>
-              <DialogFooter>
-                <Button
-                  disabled={submittingList}
-                  type="button"
-                  onClick={() => handleRenameList(newListName)}
-                >
-                  Save changes
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        </div>
-        <div className="space-y-6">
-          {sortedCartItems.length > 0 && (
-            <ScrollArea className="h-[calc(5/8*100dvh)]">
-              {sortedCartItems.map((category) => (
-                <div key={category.category_name}>
-                  <Label className="text-muted-foreground">
-                    {category.category_name}
-                  </Label>
-                  <div className="mt-2 space-y-1">
-                    {category.listItems.map((listItem) => {
-                      const isExpanded = expandedItemId === listItem.id;
-                      const localQuantity =
-                        localQuantities[listItem.id] ?? listItem.quantity;
-                      const localChecked =
-                        localCheckedStates[listItem.id] ?? listItem.checked;
-                      return (
-                        <CartListItem
-                          key={listItem.id}
-                          item={listItem}
-                          isExpanded={isExpanded}
-                          onItemClick={handleItemClick}
-                          itemId={listItem.id}
-                          handleChangeChecked={handleChangeChecked}
-                          handleDeleteListItem={handleDeleteListItem}
-                          handleChangeQuantity={handleChangeQuantity}
-                          listQueryData={listQueryData}
-                          localQuantity={localQuantity}
-                          localChecked={localChecked}
-                        />
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
-            </ScrollArea>
-          )}
-
-          <div className="space-y-2">
-            {sortedCartItems.length === 0 && (
-              <div className="h-[calc(5/8*100dvh)] my-4 space-y-2 flex flex-col items-center justify-center">
-                <p className="text-muted-foreground">No items in cart</p>
-                {pathname !== "/items" && (
-                  <Link to={"/items"}>
-                    <Button variant="outline" className="w-full">
-                      Go To Items
-                    </Button>
-                  </Link>
-                )}
-              </div>
-            )}
+      <div className="mb-6 rounded-xl bg-[#8B4F65] p-4 text-white">
+        <div className="mb-2 flex items-start justify-between">
+          <div className="h-12 w-12">🍾</div>
+          <div className="text-right">
+            <div className="mb-1">Didn't find what you need?</div>
             <Button
-              variant="outline"
-              onClick={handleCompleteList}
-              className="w-full"
+              onClick={() => {
+                setInfoPaneOpen(true);
+                setAddingNewItem(true);
+              }}
+              size="sm"
+              variant="secondary"
             >
-              {listQueryData?.completed
-                ? "Undo Complete List"
-                : "Complete List"}
+              Add item
             </Button>
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button variant="destructive" className="w-full">
-                  Delete List
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Click continue to confirm deletion.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={handleDeleteList}>
-                    Continue
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
           </div>
         </div>
-      </>
+      </div>
+      <div className="mb-4 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          {listQueryData?.completed && (
+            <Check className="h-4 w-4 text-green-500" />
+          )}
+          <h2
+            className={`text-xl font-semibold ${listQueryData?.completed ? "text-muted-foreground" : ""}`}
+          >
+            {listQueryData?.name || "Shopping List"}
+          </h2>
+        </div>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="ghost" size="icon">
+              ✏️
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Edit list name</DialogTitle>
+              <DialogDescription>
+                Rename your list here and click save when done
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="name" className="text-right">
+                  List name
+                </Label>
+                <Input
+                  id="name"
+                  value={newListName !== "" ? newListName : listQueryData?.name}
+                  className="col-span-3"
+                  onChange={(e) => setNewListName(e.target.value)}
+                  onAbort={() => {
+                    setNewListName("");
+                  }}
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button
+                disabled={submittingList}
+                type="button"
+                onClick={() => handleRenameList(newListName)}
+              >
+                Save changes
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
+      <div className="space-y-6">
+        {sortedCartItems.length > 0 && (
+          <ScrollArea
+            className={clsx(
+              "h-[calc(3/5*100dvh)]",
+              !isMobile && "h-[calc(5/8*100dvh)]"
+            )}
+          >
+            {sortedCartItems.map((category) => (
+              <div key={category.category_name}>
+                <Label className="text-muted-foreground">
+                  {category.category_name}
+                </Label>
+                <div className="mt-2 space-y-1">
+                  {category.listItems.map((listItem) => {
+                    const isExpanded = expandedItemId === listItem.id;
+                    const localQuantity =
+                      localQuantities[listItem.id] ?? listItem.quantity;
+                    const localChecked =
+                      localCheckedStates[listItem.id] ?? listItem.checked;
+                    return (
+                      <CartListItem
+                        key={listItem.id}
+                        item={listItem}
+                        isExpanded={isExpanded}
+                        onItemClick={handleItemClick}
+                        itemId={listItem.id}
+                        handleChangeChecked={handleChangeChecked}
+                        handleDeleteListItem={handleDeleteListItem}
+                        handleChangeQuantity={handleChangeQuantity}
+                        listQueryData={listQueryData}
+                        localQuantity={localQuantity}
+                        localChecked={localChecked}
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </ScrollArea>
+        )}
+
+        <div className="space-y-2">
+          {sortedCartItems.length === 0 && (
+            <div
+              className={clsx(
+                "my-4 space-y-2 flex flex-col items-center justify-center",
+                "h-[calc(3/5*100dvh)]",
+                !isMobile && "h-[calc(5/8*100dvh)]"
+              )}
+            >
+              <p className="text-muted-foreground">No items in cart</p>
+              {pathname !== "/items" && (
+                <Link to={"/items"}>
+                  <Button variant="outline" className="w-full">
+                    Go To Items
+                  </Button>
+                </Link>
+              )}
+            </div>
+          )}
+          <Button
+            variant="outline"
+            onClick={handleCompleteList}
+            className="w-full"
+          >
+            {listQueryData?.completed ? "Undo Complete List" : "Complete List"}
+          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive" className="w-full">
+                Delete List
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Click continue to confirm deletion.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDeleteList}>
+                  Continue
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+      </div>
     </div>
   );
 }

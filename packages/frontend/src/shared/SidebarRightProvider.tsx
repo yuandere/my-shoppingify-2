@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { toast } from "sonner";
 
 import { SidebarRightContext } from "@/shared/SidebarRightContext";
@@ -19,6 +19,7 @@ export function SidebarRightProvider({
   const [selectedItem, setSelectedItem] = useState<null | Item>(null);
   const [selectedListId, setSelectedListId] = useState<string | null>(null);
   const [addingListItem, setAddingListItem] = useState<boolean>(false);
+  const flashTimeoutRef = useRef<number>();
 
   const handleAddItemToList = async ({
     itemId,
@@ -69,6 +70,19 @@ export function SidebarRightProvider({
     setAddingNewItem(true);
     setInfoPaneOpen(true);
     setOpen(true);
+    flashCart();
+  };
+
+  const flashCart = () => {
+    if (flashTimeoutRef.current) {
+      window.clearTimeout(flashTimeoutRef.current);
+    }
+    const event = new CustomEvent('flash-cart');
+    window.dispatchEvent(event);
+    flashTimeoutRef.current = window.setTimeout(() => {
+      const endEvent = new CustomEvent('flash-cart-end');
+      window.dispatchEvent(endEvent);
+    }, 1000);
   };
 
   const contextValue: ISidebarRightContext = {
@@ -84,6 +98,7 @@ export function SidebarRightProvider({
     setSelectedListId,
     handleAddItemToList,
     handleAddingNewItem,
+    flashCart,
   };
   return (
     <SidebarRightContext.Provider value={contextValue}>

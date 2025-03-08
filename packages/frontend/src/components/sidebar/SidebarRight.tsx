@@ -27,8 +27,10 @@ export function SidebarRight({
   const selectedItem = sideBarRightContext?.selectedItem || null;
   const selectedListId = sideBarRightContext?.selectedListId || null;
   const [listId, setListId] = useState<string | null>(selectedListId);
-  const setSelectedListId = sideBarRightContext?.setSelectedListId || (() => {});
-  const handleAddingNewItem = sideBarRightContext?.handleAddingNewItem || (() => {});
+  const setSelectedListId =
+    sideBarRightContext?.setSelectedListId || (() => {});
+  const handleAddingNewItem =
+    sideBarRightContext?.handleAddingNewItem || (() => {});
 
   useEffect(() => {
     setListId(selectedListId);
