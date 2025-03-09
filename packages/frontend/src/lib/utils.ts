@@ -1,4 +1,5 @@
 import { clsx, type ClassValue } from "clsx";
+import dayjs from "dayjs";
 import { supabase } from "@/shared/supabaseClient";
 import { twMerge } from "tailwind-merge";
 
@@ -6,6 +7,21 @@ import type { Item } from "@/types/dashboard";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
+}
+
+export function isDateAtLeast24HoursOld(isoDateString: string): boolean {
+  try {
+    const date = dayjs(isoDateString);
+    if (!date.isValid()) {
+      return false;
+    }
+    const now = dayjs();
+    const diffInHours = now.diff(date, "hour");
+    return diffInHours >= 24;
+  } catch (error) {
+    console.error("Error processing date:", error);
+    return false;
+  }
 }
 
 export async function loaderDelayFn<T>(
@@ -21,7 +37,6 @@ export async function loaderDelayFn<T>(
 }
 
 type CategoryObj = { category_name: string; items: Item[] };
-
 export const sortItems = (itemsData: Item[], searchTerm: string) => {
   const res: CategoryObj[] = [];
   const uncategorized: CategoryObj = {

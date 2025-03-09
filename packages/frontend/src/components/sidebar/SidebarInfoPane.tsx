@@ -14,7 +14,7 @@ import { ChevronLeft, Pencil, Plus, Trash } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { SidebarContext } from "@/shared/SidebarContext";
+import { SidebarRightContext } from "@/shared/SidebarRightContext";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -69,12 +69,12 @@ function SidebarInfoPane({ selectedItem, addingNewItem }: ISidebarInfoPane) {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [newCategoryName, setNewCategoryName] = useState<string>("");
 
-  const sidebarContext = useContext(SidebarContext);
-  const setInfoPaneOpen = sidebarContext?.setInfoPaneOpen || (() => {});
-  const setAddingNewItem = sidebarContext?.setAddingNewItem || (() => {});
-  const setSelecteditem = sidebarContext?.setSelectedItem || (() => {});
-  const selectedListId = sidebarContext?.selectedListId;
-  const handleAddItemToList = sidebarContext?.handleAddItemToList || (() => {});
+  const sidebarRightContext = useContext(SidebarRightContext);
+  const setInfoPaneOpen = sidebarRightContext?.setInfoPaneOpen || (() => {});
+  const setAddingNewItem = sidebarRightContext?.setAddingNewItem || (() => {});
+  const setSelecteditem = sidebarRightContext?.setSelectedItem || (() => {});
+  const selectedListId = sidebarRightContext?.selectedListId;
+  const handleAddItemToList = sidebarRightContext?.handleAddItemToList || (() => {});
 
   const defaultValues = addingNewItem
     ? {
@@ -145,7 +145,7 @@ function SidebarInfoPane({ selectedItem, addingNewItem }: ISidebarInfoPane) {
       return;
     } finally {
       await queryClient.invalidateQueries({ queryKey: ["lists"] });
-      sidebarContext?.setSelectedListId(newList?.id ?? null);
+      sidebarRightContext?.setSelectedListId(newList?.id ?? null);
       setIsSubmitting(false);
       onClose();
       toast.success("List created");

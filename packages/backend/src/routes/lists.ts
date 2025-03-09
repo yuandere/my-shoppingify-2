@@ -35,8 +35,8 @@ lists
         console.error("Error fetching lists count:", listsCountError);
         return c.json({ error: listsCountError.message }, 500);
       }
-      console.log("listsCount: ", listsCount);
-      
+      // console.log("listsCount: ", listsCount);
+
       // Handle empty array case - start with "New List (1)"
       let newCount = 1;
       if (listsCount.length > 0) {
@@ -55,14 +55,14 @@ lists
         })
         .select("*")
         .single();
-      
+
       if (error) {
         console.error("Error creating new list:", error);
         throw error;
       }
-      
+
       newList = lists;
-      console.log("newList: ", newList);
+      // console.log("newList: ", newList);
     } catch (error: any) {
       console.error("Caught error in lists POST:", error);
       return c.json({ error: error.message }, 500);

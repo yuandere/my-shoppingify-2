@@ -1,20 +1,25 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { toast } from "sonner";
 
-import { SidebarContext } from "@/shared/SidebarContext";
+import { SidebarRightContext } from "@/shared/SidebarRightContext";
 import { queryClient } from "@/lib/queryClient";
 import { createListItem } from "@/lib/actions/listItems";
 import { listItemsQueryOptions } from "@/lib/queryOptions";
-import type { ISidebarContext } from "@/shared/SidebarContext";
+import type { ISidebarRightContext } from "@/shared/SidebarRightContext";
 import type { Item } from "@/types/dashboard";
 
-export function SidebarProvider({ children }: { children: React.ReactNode }) {
+export function SidebarRightProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [open, setOpen] = useState(false);
   const [infoPaneOpen, setInfoPaneOpen] = useState<boolean>(false);
   const [addingNewItem, setAddingNewItem] = useState(false);
   const [selectedItem, setSelectedItem] = useState<null | Item>(null);
   const [selectedListId, setSelectedListId] = useState<string | null>(null);
   const [addingListItem, setAddingListItem] = useState<boolean>(false);
+  const flashTimeoutRef = useRef<number>();
 
   const handleAddItemToList = async ({
     itemId,
@@ -65,9 +70,22 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
     setAddingNewItem(true);
     setInfoPaneOpen(true);
     setOpen(true);
+    flashCart();
   };
 
-  const contextValue: ISidebarContext = {
+  const flashCart = () => {
+    if (flashTimeoutRef.current) {
+      window.clearTimeout(flashTimeoutRef.current);
+    }
+    const event = new CustomEvent('flash-cart');
+    window.dispatchEvent(event);
+    flashTimeoutRef.current = window.setTimeout(() => {
+      const endEvent = new CustomEvent('flash-cart-end');
+      window.dispatchEvent(endEvent);
+    }, 1000);
+  };
+
+  const contextValue: ISidebarRightContext = {
     open,
     setOpen,
     infoPaneOpen,
@@ -80,10 +98,11 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
     setSelectedListId,
     handleAddItemToList,
     handleAddingNewItem,
+    flashCart,
   };
   return (
-    <SidebarContext.Provider value={contextValue}>
+    <SidebarRightContext.Provider value={contextValue}>
       {children}
-    </SidebarContext.Provider>
+    </SidebarRightContext.Provider>
   );
 }

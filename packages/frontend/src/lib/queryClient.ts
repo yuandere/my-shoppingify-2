@@ -11,7 +11,7 @@ export const queryClient = new QueryClient({
 });
 
 queryClient.setQueryDefaults(["ui", "theme-dark"], {
-  gcTime: 1000 * 60 * 60 * 24 * 7,
+  gcTime: Infinity,
   staleTime: Infinity,
   refetchOnWindowFocus: false,
 });

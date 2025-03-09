@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState, useMemo } from "react";
+import clsx from "clsx";
 import {
   useSuspenseQuery,
   useQueryErrorResetBoundary,
@@ -6,10 +7,11 @@ import {
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { Plus, Search } from "lucide-react";
 
-import { SidebarContext } from "@/shared/SidebarContext";
+import { SidebarRightContext } from "@/shared/SidebarRightContext";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { sortItems } from "@/lib/utils";
 import { itemsQueryOptions } from "@/lib/queryOptions";
 import { Item } from "@/types/dashboard";
@@ -37,29 +39,38 @@ export const Route = createFileRoute("/_auth/items")({
 });
 
 function ItemsPage() {
+  const isMobile = useIsMobile();
   const { data } = useSuspenseQuery(itemsQueryOptions());
   const [searchTerm, setSearchTerm] = useState<string>("");
   const displayedItems = useMemo(
     () => sortItems(data, searchTerm),
     [data, searchTerm]
   );
-  const sidebarContext = useContext(SidebarContext);
+  const sidebarRightContext = useContext(SidebarRightContext);
 
   const handleItemClick = (item: Item) => {
-    if (!sidebarContext) return;
+    if (!sidebarRightContext) return;
     if (
-      sidebarContext.infoPaneOpen &&
-      item.id === sidebarContext.selectedItem?.id
+      sidebarRightContext.infoPaneOpen &&
+      item.id === sidebarRightContext.selectedItem?.id
     )
       return;
-    sidebarContext.setSelectedItem(item);
-    sidebarContext.setAddingNewItem(false);
-    sidebarContext.setInfoPaneOpen(true);
-    sidebarContext.setOpen(true);
+    sidebarRightContext.setSelectedItem(item);
+    sidebarRightContext.setAddingNewItem(false);
+    sidebarRightContext.setInfoPaneOpen(true);
+    sidebarRightContext.setOpen(true);
+    if (isMobile) {
+      sidebarRightContext?.flashCart();
+    }
   };
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] flex-col">
+    <div
+      className={clsx(
+        "flex h-screen flex-col",
+        isMobile && "h-[calc(100vh-4rem)]"
+      )}
+    >
       <header className="flex items-center gap-4 border-b p-4">
         <div className="relative flex-1">
           <Search className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -72,12 +83,12 @@ function ItemsPage() {
         <Button
           className="p-1 grid place-items-center border rounded-md transition-all hover:scale-[125%] hover:text-[var(--accent-color)]"
           variant="ghost"
-          onClick={sidebarContext?.handleAddingNewItem}
+          onClick={sidebarRightContext?.handleAddingNewItem}
           size={"icon"}
           disabled={
-            sidebarContext?.infoPaneOpen &&
-            !sidebarContext?.addingNewItem &&
-            !!sidebarContext?.selectedItem
+            sidebarRightContext?.infoPaneOpen &&
+            !sidebarRightContext?.addingNewItem &&
+            !!sidebarRightContext?.selectedItem
           }
         >
           <Plus />
@@ -92,11 +103,11 @@ function ItemsPage() {
                 <Button
                   className="w-10 h-10 p-1 grid place-items-center border rounded-full transition-all hover:scale-[125%] hover:text-[var(--accent-color)]"
                   variant="ghost"
-                  onClick={sidebarContext?.handleAddingNewItem}
+                  onClick={sidebarRightContext?.handleAddingNewItem}
                   disabled={
-                    sidebarContext?.infoPaneOpen &&
-                    !sidebarContext?.addingNewItem &&
-                    !!sidebarContext?.selectedItem
+                    sidebarRightContext?.infoPaneOpen &&
+                    !sidebarRightContext?.addingNewItem &&
+                    !!sidebarRightContext?.selectedItem
                   }
                 >
                   <Plus />
@@ -111,27 +122,32 @@ function ItemsPage() {
                 <h2 className="mb-4 text-2xl font-semibold">
                   {categoryObj.category_name}
                 </h2>
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
                   {categoryObj.items.map((item) => (
                     <div
-                      className="flex items-center justify-between h-auto rounded-md border p-4 transition-colors cursor-pointer hover:bg-accent hover:text-accent-foreground"
-                      //inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground h-9 w-9
+                      className="flex items-center justify-between rounded-md border p-4 transition-colors cursor-pointer hover:bg-accent hover:text-accent-foreground group"
                       data-id={item.id}
                       key={`item-${item.name}`}
                       onClick={() => handleItemClick(item)}
                     >
-                      <span>{item.name}</span>
+                      <span className="truncate flex-1">{item.name}</span>
                       <Button
-                        className="transition-all hover:scale-[150%] hover:text-[var(--accent-color)]"
+                        className={clsx(
+                          "transition-all hover:scale-[125%] hover:text-[var(--accent-color)]",
+                          !isMobile && "opacity-0 group-hover:opacity-100"
+                        )}
                         variant="ghost"
                         size="icon"
                         onClick={(e) => {
                           e.stopPropagation();
-                          sidebarContext?.handleAddItemToList({
+                          sidebarRightContext?.handleAddItemToList({
                             itemId: item.id,
                             itemName: item.name,
                             category_name: item.category_name ?? undefined,
                           });
+                          if (isMobile) {
+                            sidebarRightContext?.flashCart();
+                          }
                         }}
                       >
                         <Plus />
@@ -141,6 +157,7 @@ function ItemsPage() {
                 </div>
               </div>
             ))}
+            {isMobile && <div className="h-8" />}
           </main>
         </div>
       </ScrollArea>
