@@ -78,7 +78,7 @@ function SidebarCart({
 
   useMemo(() => {
     if (listItems) {
-      console.log("listItems:", listItems, "Type:", typeof listItems);
+      // console.log("listItems:", listItems, "Type:", typeof listItems);
       const quantities: Record<number, number> = {};
       const checkedStates: Record<number, boolean> = {};
       listItems.forEach((listItem) => {
@@ -296,7 +296,9 @@ function SidebarCart({
     <div className="p-4">
       <div className="mb-6 rounded-xl bg-[#8B4F65] p-4 text-white">
         <div className="mb-2 flex items-start justify-between">
-          <div className="h-12 w-12">🍾</div>
+          <div className="h-20 w-12 grid place-items-center">
+            <span className="text-3xl">🍾</span>
+          </div>
           <div className="text-right">
             <div className="mb-1">Didn't find what you need?</div>
             <Button
@@ -326,7 +328,7 @@ function SidebarCart({
         <Dialog>
           <DialogTrigger asChild>
             <Button variant="ghost" size="icon">
-              ✏️
+              <span className="text-xl">✏️</span>
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">

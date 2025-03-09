@@ -42,7 +42,7 @@ export function SidebarRight({
     let newList = null;
     try {
       const data = await createList();
-      console.log(data);
+      // console.log(data);
       newList = data as ListsViewList;
     } catch (e) {
       console.error(e);

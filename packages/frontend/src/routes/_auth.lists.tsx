@@ -1,11 +1,12 @@
 import * as React from "react";
+import clsx from "clsx";
 import {
   useQueryErrorResetBoundary,
   useSuspenseQuery,
 } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
 import { createFileRoute } from "@tanstack/react-router";
-import { CalendarDays, Plus, Search } from "lucide-react";
+import { CalendarDays, Check, Plus, Search } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -69,7 +70,7 @@ function RouteComponent() {
     let newList = null;
     try {
       const data = await createList();
-      console.log(data);
+      // console.log(data);
       newList = data as ListsViewList;
       await Promise.resolve(
         queryClient.invalidateQueries({ queryKey: ["lists"] })
@@ -101,7 +102,7 @@ function RouteComponent() {
   };
 
   const handleMouseOverList = async (listId: string) => {
-    console.log("listitems being ensured for list", listId);
+    // console.log("listitems being ensured for list", listId);
     await queryClient.ensureQueryData(listItemsQueryOptions(listId));
   };
 
@@ -157,13 +158,37 @@ function RouteComponent() {
               onClick={() => handleListClick(list.id)}
               onMouseOver={() => handleMouseOverList(list.id)}
             >
-              <div className="h-6 w-6 rounded-full bg-muted" />
-              <div>{list.name}</div>
-              <div className="flex items-center">
-                <CalendarDays className="mr-2 h-4 w-4" />
-                <p className="">{list.updated_at_formatted}</p>
+              <div className="h-6 w-6 rounded-full bg-muted grid place-items-center overflow-visible">
+                {list.completed && (
+                  <Check className="h-8 w-8 -translate-y-[5px]" />
+                )}
               </div>
-              <p className="">{list.completed ? "Complete" : "Incomplete"}</p>
+              {isMobile ? (
+                <div className="flex flex-col align-start mr-2">
+                  <p className="truncate">{list.name}</p>
+                  <div className="flex items-center text-sm text-muted-foreground">
+                    <CalendarDays className="mr-2 h-4 w-4" />
+                    <p className="">{list.updated_at_formatted}</p>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <p className="truncate">{list.name}</p>
+                  <div className="flex items-center">
+                    <CalendarDays className="mr-2 h-4 w-4" />
+                    <p className="">{list.updated_at_formatted}</p>
+                  </div>
+                </>
+              )}
+
+              <p
+                className={clsx(
+                  "w-24 ml-auto",
+                  list.completed ? "text-green-600" : "text-red-700"
+                )}
+              >
+                {list.completed ? "Complete" : "Incomplete"}
+              </p>
             </div>
           ))}
           {isMobile && <div className="h-8" />}
