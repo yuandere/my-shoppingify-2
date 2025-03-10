@@ -16,11 +16,7 @@ app.use(logger());
 app.use(
   "/api/v1/*",
   cors({
-    origin: (origin, c) => {
-      return origin.endsWith(c.env.FRONTEND_URL_SUFFIX)
-        ? origin
-        : "http://localhost:5173";
-    },
+    origin: ["http://localhost:5173", "https://my-shoppingify-2.netlify.app"],
   })
 );
 app.use("/api/*", authMiddleware);
