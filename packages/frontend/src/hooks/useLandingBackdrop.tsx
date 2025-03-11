@@ -21,9 +21,11 @@ export function useLandingBackdrop(
     if (!canvasRef.current) return;
     // Initialize eruda debugger if URL param is present
     initDebugger();
-
+    console.log("device pixel ratio,", window.devicePixelRatio);
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     const engine = Matter.Engine.create({
       gravity: { x: 0, y: 0.3 },
+      ...(isMobile && { positionIterations: 4, velocityIterations: 2 }),
     });
     const render = Matter.Render.create({
       canvas: canvasRef.current,
@@ -33,7 +35,7 @@ export function useLandingBackdrop(
         height: window.innerHeight,
         wireframes: false,
         background: "transparent",
-        pixelRatio: window.devicePixelRatio,
+        pixelRatio: isMobile ? 2 : window.devicePixelRatio,
       },
     });
 
@@ -227,7 +229,9 @@ export function useLandingBackdrop(
     });
 
     // Start the engine and renderer
-    const runner = Matter.Runner.create();
+    const runner = Matter.Runner.create({
+      ...(isMobile && { delta: 1000 / 15 }),
+    });
     Matter.Runner.run(runner, engine);
     Matter.Render.run(render);
 
