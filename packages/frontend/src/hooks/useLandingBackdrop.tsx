@@ -21,11 +21,9 @@ export function useLandingBackdrop(
     if (!canvasRef.current) return;
     // Initialize eruda debugger if URL param is present
     initDebugger();
-    console.log("device pixel ratio,", window.devicePixelRatio);
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    
     const engine = Matter.Engine.create({
-      gravity: { x: 0, y: 0.3 },
-      ...(isMobile && { positionIterations: 4, velocityIterations: 2 }),
+      gravity: { x: 0, y: 0.3 }
     });
     const render = Matter.Render.create({
       canvas: canvasRef.current,
@@ -35,7 +33,7 @@ export function useLandingBackdrop(
         height: window.innerHeight,
         wireframes: false,
         background: "transparent",
-        pixelRatio: isMobile ? 2 : window.devicePixelRatio,
+        pixelRatio: window.devicePixelRatio,
       },
     });
 
@@ -47,7 +45,7 @@ export function useLandingBackdrop(
 
     // Create pegs in a triangular pattern
     const createPegs = () => {
-      const startX = window.innerWidth / 2 - (pegRows * pegSpacing) / 2;
+      const startX = window.innerWidth / 2 - (pegRows * pegSpacing) / 2 + 28;
       const newPegs: Matter.Body[] = [];
       for (let row = 0; row < pegRows; row++) {
         const numPegsInRow = pegRows - row;
@@ -229,9 +227,7 @@ export function useLandingBackdrop(
     });
 
     // Start the engine and renderer
-    const runner = Matter.Runner.create({
-      ...(isMobile && { delta: 1000 / 15 }),
-    });
+    const runner = Matter.Runner.create();
     Matter.Runner.run(runner, engine);
     Matter.Render.run(render);
 
