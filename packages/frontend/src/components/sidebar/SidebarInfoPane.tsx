@@ -8,6 +8,7 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogOverlay,
+  DialogClose,
 } from "@radix-ui/react-dialog";
 import { Label } from "@radix-ui/react-label";
 import { ChevronLeft, Pencil, Plus, Trash } from "lucide-react";
@@ -74,7 +75,8 @@ function SidebarInfoPane({ selectedItem, addingNewItem }: ISidebarInfoPane) {
   const setAddingNewItem = sidebarRightContext?.setAddingNewItem || (() => {});
   const setSelecteditem = sidebarRightContext?.setSelectedItem || (() => {});
   const selectedListId = sidebarRightContext?.selectedListId;
-  const handleAddItemToList = sidebarRightContext?.handleAddItemToList || (() => {});
+  const handleAddItemToList =
+    sidebarRightContext?.handleAddItemToList || (() => {});
 
   const defaultValues = addingNewItem
     ? {
@@ -194,7 +196,7 @@ function SidebarInfoPane({ selectedItem, addingNewItem }: ISidebarInfoPane) {
     values.name = values.name.trim();
     // console.log("form values", values);
     for (const item of itemsQuery.data) {
-      if (item.name === values.name) {
+      if (item.name === values.name && item.id !== values.id) {
         toast.error("Item with that name already exists");
         return;
       }
@@ -347,6 +349,9 @@ function SidebarInfoPane({ selectedItem, addingNewItem }: ISidebarInfoPane) {
                               >
                                 Remove Image
                               </Button>
+                              <DialogClose asChild>
+                                <Button type="button">Confirm</Button>
+                              </DialogClose>
                             </div>
                           </div>
                         </DialogContent>

@@ -1,15 +1,14 @@
 import { useEffect } from "react";
 import Matter from "matter-js";
 
-// Initialize eruda debugger if URL param is present
 const initDebugger = () => {
   const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.get('eruda') === 'true') {
-    const script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/eruda';
+  if (urlParams.get("eruda") === "true") {
+    const script = document.createElement("script");
+    script.src = "https://cdn.jsdelivr.net/npm/eruda";
     document.body.appendChild(script);
     script.onload = () => {
-      // @ts-ignore
+      // @ts-expect-error eruda is present after loading
       window.eruda.init();
     };
   }
@@ -19,14 +18,12 @@ export function useLandingBackdrop(
   canvasRef: React.RefObject<HTMLCanvasElement>
 ) {
   useEffect(() => {
-    // Initialize mobile debugger
-    initDebugger();
-
     if (!canvasRef.current) return;
-
-    // Matter.js setup
+    // Initialize eruda debugger if URL param is present
+    initDebugger();
+    
     const engine = Matter.Engine.create({
-      gravity: { x: 0, y: 0.3 },
+      gravity: { x: 0, y: 0.3 }
     });
     const render = Matter.Render.create({
       canvas: canvasRef.current,
@@ -36,7 +33,7 @@ export function useLandingBackdrop(
         height: window.innerHeight,
         wireframes: false,
         background: "transparent",
-        pixelRatio: window.devicePixelRatio || 1, // Ensure fallback for devicePixelRatio
+        pixelRatio: window.devicePixelRatio,
       },
     });
 
@@ -48,7 +45,7 @@ export function useLandingBackdrop(
 
     // Create pegs in a triangular pattern
     const createPegs = () => {
-      const startX = window.innerWidth / 2 - (pegRows * pegSpacing) / 2;
+      const startX = window.innerWidth / 2 - (pegRows * pegSpacing) / 2 + 28;
       const newPegs: Matter.Body[] = [];
       for (let row = 0; row < pegRows; row++) {
         const numPegsInRow = pegRows - row;
@@ -198,7 +195,7 @@ export function useLandingBackdrop(
       });
 
       // Draw emojis with slight fade-out at bottom
-      context.font = `${emojiSize * 2}px -apple-system, "Segoe UI Emoji", Arial`;
+      context.font = `${emojiSize * 2}px -apple-system, "Segoe UI Emoji", Arial, sans-serif`;
       context.textAlign = "center";
       context.textBaseline = "middle";
 
@@ -214,15 +211,13 @@ export function useLandingBackdrop(
 
           // Save context state
           context.save();
+
+          // Translate and rotate for emoji
           context.translate(x, y);
           context.rotate(angle);
+
+          // Draw emoji with opacity
           context.globalAlpha = opacity;
-
-          // Scale emojis based on device pixel ratio
-          const scale = window.devicePixelRatio || 1;
-          context.scale(1/scale, 1/scale);
-
-          // Draw emoji with proper scaling
           context.fillText(body.label, 0, 0);
 
           // Restore context state
@@ -244,7 +239,7 @@ export function useLandingBackdrop(
       // Update canvas dimensions
       render.canvas.width = window.innerWidth;
       render.canvas.height = window.innerHeight;
-      Matter.Render.setPixelRatio(render, window.devicePixelRatio || 1);
+      Matter.Render.setPixelRatio(render, window.devicePixelRatio);
 
       // Remove old pegs
       pegs.forEach((peg) => {

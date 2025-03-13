@@ -71,7 +71,7 @@ const populateDemoData = async (userId: string) => {
         .insert({
           name: list.name,
           user_id: userId,
-          completed: false,
+          completed: list.completed,
         })
         .select()
         .single();
@@ -80,8 +80,8 @@ const populateDemoData = async (userId: string) => {
         list_id: listData.id,
         item_id: itemMap.get(itemName)?.id ?? null,
         name: itemName,
-        quantity: 1,
-        checked: false,
+        quantity: Math.floor(Math.random() * 10) + 1,
+        checked: Math.random() > 0.5,
         user_id: userId,
         category_name: itemMap.get(itemName)?.category_name ?? null,
       }));
@@ -155,16 +155,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     handleStoreAuth(data.user);
   };
 
-  const contextValue = {
-    isAuthenticated,
-    user,
-    handleStoreAuth,
-    loginWithDemo,
-    loginWithEmail,
-    logout,
-    verifyOtp,
-  };
-
   useEffect(() => {
     if (data !== undefined) {
       handleStoreAuth(data);
@@ -205,6 +195,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       data.subscription.unsubscribe();
     };
   }, [handleStoreAuth]);
+
+  const contextValue = {
+    isAuthenticated,
+    user,
+    handleStoreAuth,
+    loginWithDemo,
+    loginWithEmail,
+    logout,
+    verifyOtp,
+  };
 
   return (
     <AuthContext.Provider value={{ ...contextValue, isInitializing }}>
