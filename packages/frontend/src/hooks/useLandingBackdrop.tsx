@@ -1,29 +1,14 @@
 import { useEffect } from "react";
 import Matter from "matter-js";
 
-const initDebugger = () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.get("eruda") === "true") {
-    const script = document.createElement("script");
-    script.src = "https://cdn.jsdelivr.net/npm/eruda";
-    document.body.appendChild(script);
-    script.onload = () => {
-      // @ts-expect-error eruda is present after loading
-      window.eruda.init();
-    };
-  }
-};
-
 export function useLandingBackdrop(
   canvasRef: React.RefObject<HTMLCanvasElement>
 ) {
   useEffect(() => {
     if (!canvasRef.current) return;
-    // Initialize eruda debugger if URL param is present
-    initDebugger();
-    
+
     const engine = Matter.Engine.create({
-      gravity: { x: 0, y: 0.3 }
+      gravity: { x: 0, y: 0.3 },
     });
     const render = Matter.Render.create({
       canvas: canvasRef.current,
