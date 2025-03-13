@@ -125,15 +125,21 @@ function ItemsPage() {
                 <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
                   {categoryObj.items.map((item) => (
                     <div
-                      className="flex items-center justify-between rounded-md border p-4 transition-colors cursor-pointer hover:bg-accent hover:text-accent-foreground group"
+                      className="flex items-center justify-between rounded-md border p-4 transition-colors cursor-pointer hover:bg-accent hover:text-accent-foreground group relative overflow-hidden"
                       data-id={item.id}
                       key={`item-${item.name}`}
                       onClick={() => handleItemClick(item)}
                     >
-                      <span className="truncate flex-1">{item.name}</span>
+                      {item.image_url && (
+                        <div 
+                          className="absolute inset-0 opacity-20 bg-cover bg-center bg-no-repeat pointer-events-none" 
+                          style={{ backgroundImage: `url(${item.image_url})` }}
+                        />
+                      )}
+                      <span className="truncate flex-1 relative z-10">{item.name}</span>
                       <Button
                         className={clsx(
-                          "transition-all hover:scale-[125%] hover:text-[var(--accent-color)]",
+                          "transition-all hover:scale-[125%] hover:text-[var(--accent-color)] relative z-10",
                           !isMobile && "opacity-0 group-hover:opacity-100"
                         )}
                         variant="ghost"

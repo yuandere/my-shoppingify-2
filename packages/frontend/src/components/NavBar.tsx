@@ -78,7 +78,7 @@ export function NavBar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         "flex flex-col",
         !isMobile && "w-14 h-screen border-r shrink-0",
         isMobile &&
-          "absolute z-10 left-0 bottom-0 w-screen h-14 border-t flex-row"
+          "absolute z-20 left-0 bottom-0 w-screen h-14 border-t flex-row"
       )}
       {...props}
     >
