@@ -72,6 +72,8 @@ const populateDemoData = async (userId: string) => {
           name: list.name,
           user_id: userId,
           completed: list.completed,
+          created_at: list.created_at,
+          updated_at: list.updated_at,
         })
         .select()
         .single();
