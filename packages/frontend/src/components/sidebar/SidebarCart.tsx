@@ -1,5 +1,4 @@
 import { useMemo, useState, useEffect, useCallback, useContext } from "react";
-import clsx from "clsx";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, useLocation } from "@tanstack/react-router";
 import { Check } from "lucide-react";
@@ -31,7 +30,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { SidebarRightContext } from "@/shared/SidebarRightContext";
-import { useIsMobile } from "@/hooks/useIsMobile";
 import CartListItem from "./CartListItem";
 import { queryClient } from "@/lib/queryClient";
 import { listsQueryOptions, listItemsQueryOptions } from "@/lib/queryOptions";
@@ -52,7 +50,6 @@ function SidebarCart({
   setInfoPaneOpen,
   setAddingNewItem,
 }: ISidebarCart) {
-  const isMobile = useIsMobile();
   const sidebarRightContext = useContext(SidebarRightContext);
   const pathname = useLocation({ select: (location) => location.pathname });
   const listQuery = useSuspenseQuery(listsQueryOptions());
@@ -293,21 +290,21 @@ function SidebarCart({
   }, [listItems]);
 
   return (
-    <div className="p-4">
+    <div className="h-full p-4 flex flex-col">
       <div className="mb-6 rounded-xl bg-[#8B4F65] p-4 text-white">
-        <div className="mb-2 flex items-start justify-between">
+        <div className="mb-2 flex items-center justify-between">
           <div className="h-20 w-12 grid place-items-center">
             <span className="text-3xl">🍾</span>
           </div>
-          <div className="text-right">
-            <div className="mb-1">Didn't find what you need?</div>
+          <div className="h-full flex flex-col justify-items-center text-right">
+            <div className="mt-3 self-center">Didn't find what you need?</div>
             <Button
               onClick={() => {
                 setInfoPaneOpen(true);
                 setAddingNewItem(true);
               }}
-              size="sm"
               variant="secondary"
+              className="w-24 translate-y-4 self-end"
             >
               Add item
             </Button>
@@ -366,14 +363,9 @@ function SidebarCart({
           </DialogContent>
         </Dialog>
       </div>
-      <div className="space-y-6">
+      <div className="space-y-6 flex-1 flex flex-col">
         {sortedCartItems.length > 0 && (
-          <ScrollArea
-            className={clsx(
-              "h-[calc(3/5*100dvh)]",
-              !isMobile && "h-[calc(5/8*100dvh)]"
-            )}
-          >
+          <ScrollArea className="flex-1">
             {sortedCartItems.map((category) => (
               <div key={category.category_name}>
                 <Label className="text-muted-foreground">
@@ -408,15 +400,9 @@ function SidebarCart({
           </ScrollArea>
         )}
 
-        <div className="space-y-2">
+        <div className="flex-1 flex flex-col space-y-2">
           {sortedCartItems.length === 0 && (
-            <div
-              className={clsx(
-                "my-4 space-y-2 flex flex-col items-center justify-center",
-                "h-[calc(3/5*100dvh)]",
-                !isMobile && "h-[calc(5/8*100dvh)]"
-              )}
-            >
+            <div className="my-4 space-y-2 flex-1 flex flex-col items-center justify-center">
               <p className="text-muted-foreground">No items in cart</p>
               {pathname !== "/items" && (
                 <Link to={"/items"}>
@@ -430,7 +416,7 @@ function SidebarCart({
           <Button
             variant="outline"
             onClick={handleCompleteList}
-            className="w-full"
+            className="w-full !mt-auto"
           >
             {listQueryData?.completed ? "Undo Complete List" : "Complete List"}
           </Button>

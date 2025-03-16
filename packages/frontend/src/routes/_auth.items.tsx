@@ -29,7 +29,8 @@ export const Route = createFileRoute("/_auth/items")({
     return (
       <div>
         <p>{error.message}</p>
-        <button onClick={() => router.invalidate()}>Try again</button>
+        <p>Something went wrong</p>
+        <Button onClick={() => router.invalidate()}>Try again</Button>
       </div>
     );
   },
@@ -50,6 +51,9 @@ function ItemsPage() {
 
   const handleItemClick = (item: Item) => {
     if (!sidebarRightContext) return;
+    if (isMobile) {
+      sidebarRightContext?.flashCart();
+    }
     if (
       sidebarRightContext.infoPaneOpen &&
       item.id === sidebarRightContext.selectedItem?.id
@@ -59,9 +63,6 @@ function ItemsPage() {
     sidebarRightContext.setAddingNewItem(false);
     sidebarRightContext.setInfoPaneOpen(true);
     sidebarRightContext.setOpen(true);
-    if (isMobile) {
-      sidebarRightContext?.flashCart();
-    }
   };
 
   return (
@@ -131,12 +132,14 @@ function ItemsPage() {
                       onClick={() => handleItemClick(item)}
                     >
                       {item.image_url && (
-                        <div 
-                          className="absolute inset-0 opacity-20 bg-cover bg-center bg-no-repeat pointer-events-none" 
+                        <div
+                          className="absolute inset-0 opacity-20 bg-cover bg-center bg-no-repeat pointer-events-none"
                           style={{ backgroundImage: `url(${item.image_url})` }}
                         />
                       )}
-                      <span className="truncate flex-1 relative z-10">{item.name}</span>
+                      <span className="truncate flex-1 relative z-10">
+                        {item.name}
+                      </span>
                       <Button
                         className={clsx(
                           "transition-all hover:scale-[125%] hover:text-[var(--accent-color)] relative z-10",

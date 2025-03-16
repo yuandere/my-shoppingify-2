@@ -11,6 +11,11 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { SidebarRightProvider } from "@/shared/SidebarRightProvider";
 import { SidebarRight } from "@/components/sidebar/SidebarRight";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import {
+  listsQueryOptions,
+  itemsQueryOptions,
+  categoriesQueryOptions,
+} from "@/lib/queryOptions";
 
 export const Route = createFileRoute("/_auth")({
   beforeLoad: ({ context, location }) => {
@@ -25,6 +30,11 @@ export const Route = createFileRoute("/_auth")({
         },
       });
     }
+  },
+  loader: async (options) => {
+    options.context.queryClient.ensureQueryData(listsQueryOptions());
+    options.context.queryClient.ensureQueryData(itemsQueryOptions());
+    options.context.queryClient.ensureQueryData(categoriesQueryOptions());
   },
   component: AuthLayout,
 });
@@ -52,7 +62,7 @@ function AuthLayout() {
           <div
             className={clsx(
               "absolute bottom-8 w-fit left-0 right-0 mx-auto",
-              isMobile && "bottom-32"
+              isMobile && "bottom-36"
             )}
           >
             <div className="flex items-center gap-2 opacity-50">

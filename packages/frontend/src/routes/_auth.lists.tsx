@@ -32,7 +32,8 @@ export const Route = createFileRoute("/_auth/lists")({
     return (
       <div>
         <p>{error.message}</p>
-        <button onClick={() => router.invalidate()}>Try again</button>
+        <p>Something went wrong</p>
+        <Button onClick={() => router.invalidate()}>Try again</Button>
       </div>
     );
   },
@@ -107,7 +108,12 @@ function RouteComponent() {
   };
 
   return (
-    <div className="flex h-full flex-col">
+    <div
+      className={clsx(
+        "flex h-screen flex-col",
+        isMobile && "h-[calc(100vh-4rem)]"
+      )}
+    >
       <header className="flex items-center gap-4 border-b p-4">
         <div className="relative flex-1">
           <Search className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />

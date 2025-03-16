@@ -15,8 +15,8 @@ export default {
             boxShadow: '0 0 0 0 hsl(var(--primary) / 0.7)'
           },
           '50%': { 
-            opacity: '0.7',
-            boxShadow: '0 0 20px 10px hsl(var(--primary) / 0)'
+            opacity: '0.9',
+            boxShadow: '0 0 60px 10px hsl(var(--primary) / 0)'
           },
           '100%': { 
             opacity: '1',
