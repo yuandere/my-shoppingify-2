@@ -8,13 +8,14 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogOverlay,
+  DialogClose,
 } from "@radix-ui/react-dialog";
 import { Label } from "@radix-ui/react-label";
 import { ChevronLeft, Pencil, Plus, Trash } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { SidebarContext } from "@/shared/SidebarContext";
+import { SidebarRightContext } from "@/shared/SidebarRightContext";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -69,12 +70,13 @@ function SidebarInfoPane({ selectedItem, addingNewItem }: ISidebarInfoPane) {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [newCategoryName, setNewCategoryName] = useState<string>("");
 
-  const sidebarContext = useContext(SidebarContext);
-  const setInfoPaneOpen = sidebarContext?.setInfoPaneOpen || (() => {});
-  const setAddingNewItem = sidebarContext?.setAddingNewItem || (() => {});
-  const setSelecteditem = sidebarContext?.setSelectedItem || (() => {});
-  const selectedListId = sidebarContext?.selectedListId;
-  const handleAddItemToList = sidebarContext?.handleAddItemToList || (() => {});
+  const sidebarRightContext = useContext(SidebarRightContext);
+  const setInfoPaneOpen = sidebarRightContext?.setInfoPaneOpen || (() => {});
+  const setAddingNewItem = sidebarRightContext?.setAddingNewItem || (() => {});
+  const setSelecteditem = sidebarRightContext?.setSelectedItem || (() => {});
+  const selectedListId = sidebarRightContext?.selectedListId;
+  const handleAddItemToList =
+    sidebarRightContext?.handleAddItemToList || (() => {});
 
   const defaultValues = addingNewItem
     ? {
@@ -145,7 +147,7 @@ function SidebarInfoPane({ selectedItem, addingNewItem }: ISidebarInfoPane) {
       return;
     } finally {
       await queryClient.invalidateQueries({ queryKey: ["lists"] });
-      sidebarContext?.setSelectedListId(newList?.id ?? null);
+      sidebarRightContext?.setSelectedListId(newList?.id ?? null);
       setIsSubmitting(false);
       onClose();
       toast.success("List created");
@@ -194,7 +196,7 @@ function SidebarInfoPane({ selectedItem, addingNewItem }: ISidebarInfoPane) {
     values.name = values.name.trim();
     // console.log("form values", values);
     for (const item of itemsQuery.data) {
-      if (item.name === values.name) {
+      if (item.name === values.name && item.id !== values.id) {
         toast.error("Item with that name already exists");
         return;
       }
@@ -347,6 +349,9 @@ function SidebarInfoPane({ selectedItem, addingNewItem }: ISidebarInfoPane) {
                               >
                                 Remove Image
                               </Button>
+                              <DialogClose asChild>
+                                <Button type="button">Confirm</Button>
+                              </DialogClose>
                             </div>
                           </div>
                         </DialogContent>

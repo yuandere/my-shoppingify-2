@@ -1,6 +1,5 @@
 import { queryOptions } from "@tanstack/react-query";
 
-// import queryClient from "./queryClient";
 import {
   fetchCategories,
   fetchItems,
@@ -8,35 +7,32 @@ import {
   fetchListItems,
 } from "./dashboardFetchers";
 
+export const itemsKey = ["items"] as const;
+export const listsKey = ["lists"] as const;
+export const listItemsKey = (listId: string) => ["listItems", listId] as const;
+export const categoriesKey = ["categories"] as const;
+
 export const itemsQueryOptions = () =>
   queryOptions({
-    queryKey: ["items"],
+    queryKey: itemsKey,
     queryFn: () => fetchItems(),
   });
 
 export const listsQueryOptions = () =>
   queryOptions({
-    queryKey: ["lists"],
+    queryKey: listsKey,
     queryFn: () => fetchLists(),
     staleTime: 1000 * 5,
   });
 
 export const listItemsQueryOptions = (listId: string) =>
   queryOptions({
-    queryKey: ["listItems", listId],
+    queryKey: listItemsKey(listId),
     queryFn: () => fetchListItems(listId),
   });
 
 export const categoriesQueryOptions = () =>
   queryOptions({
-    queryKey: ["categories"],
+    queryKey: categoriesKey,
     queryFn: () => fetchCategories(),
   });
-
-// export const useCreateInvoiceMutation = () => {
-//   return useMutation({
-//     // mutationKey: ['invoices', 'create'],
-//     mutationFn: postInvoice,
-//     onSuccess: () => queryClient.invalidateQueries(),
-//   })
-// }

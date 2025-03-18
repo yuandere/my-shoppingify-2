@@ -4,6 +4,7 @@ import {
   useRouter,
 } from "@tanstack/react-router";
 import axios from "redaxios";
+import clsx from "clsx";
 import { toast } from "sonner";
 
 import {
@@ -19,7 +20,9 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useAuth } from "@/hooks/useAuth";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { tokenHelper } from "@/lib/utils";
 
 const clearLocalStorage = () => {
@@ -35,6 +38,7 @@ export const Route = createFileRoute("/_auth/settings")({
 });
 
 function RouteComponent() {
+  const isMobile = useIsMobile();
   const { user, handleStoreAuth } = useAuth();
   const navigate = useNavigate();
   const router = useRouter();
@@ -63,69 +67,74 @@ function RouteComponent() {
   };
 
   return (
-    <div className="flex h-full flex-col ml-8 mr-2 mt-8 space-y-8">
-      <h1 className="text-3xl font-bold">Settings</h1>
-      <div className="flex flex-col space-y-4">
-        <Card>
-          <CardHeader>
-            <CardTitle>Account</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              {user?.email ? (
-                <>
-                  <div className="text-sm text-muted-foreground">Email</div>
-                  <div>{user?.email}</div>
-                </>
-              ) : (
-                <div className="text-sm text-muted-foreground">DEMO</div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-        {user?.is_anonymous ? (
-          <Card>
-            <CardHeader>
-              <CardTitle>Danger Zone</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Button variant="destructive" onClick={deleteAccount}>
-                Leave Demo
-              </Button>
-            </CardContent>
-          </Card>
-        ) : (
-          <Card>
-            <CardHeader>
-              <CardTitle>Danger Zone</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button variant="destructive">Delete Account</Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>
-                      Are you absolutely sure?
-                    </AlertDialogTitle>
-                    <AlertDialogDescription>
-                      This action cannot be undone. This will permanently delete
-                      your account.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={deleteAccount}>
-                      Continue
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            </CardContent>
-          </Card>
-        )}
-      </div>
+    <div
+      className={clsx(
+        "flex h-full flex-col",
+        isMobile && "h-[calc(100vh-4rem)]"
+      )}
+    >
+      <ScrollArea className="flex-1">
+        <div className="p-6">
+          <h1 className="text-3xl font-bold mb-8">Settings</h1>
+          <div className="flex flex-col space-y-4">
+            {user?.email ? (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Account</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <div className="text-sm text-muted-foreground">Email</div>
+                    <div>{user.email}</div>
+                  </div>
+                </CardContent>
+              </Card>
+            ) : null}
+            {user?.is_anonymous ? (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Danger Zone</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Button variant="destructive" onClick={deleteAccount}>
+                    Leave Demo
+                  </Button>
+                </CardContent>
+              </Card>
+            ) : (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Danger Zone</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="destructive">Delete Account</Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>
+                          Are you absolutely sure?
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone. This will permanently
+                          delete your account.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={deleteAccount}>
+                          Continue
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        </div>
+      </ScrollArea>
     </div>
   );
 }
