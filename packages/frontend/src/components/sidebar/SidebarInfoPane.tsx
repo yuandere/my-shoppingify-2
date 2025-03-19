@@ -11,7 +11,7 @@ import {
   DialogClose,
 } from "@radix-ui/react-dialog";
 import { Label } from "@radix-ui/react-label";
-import { ChevronLeft, Pencil, Plus, Trash } from "lucide-react";
+import { ChevronLeft, Pencil, Plus, Trash, X } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -308,7 +308,7 @@ function SidebarInfoPane({ selectedItem, addingNewItem }: ISidebarInfoPane) {
                             <img
                               src={field.value}
                               alt={form.getValues("name")}
-                              width={320}
+                              width={271}
                               height={192}
                               className="w-full h-full object-cover"
                             />
@@ -344,8 +344,9 @@ function SidebarInfoPane({ selectedItem, addingNewItem }: ISidebarInfoPane) {
                             />
                             <div className="flex justify-end space-x-2">
                               <Button
+                                type="button"
                                 variant="outline"
-                                onClick={() => field.onChange("")}
+                                onClick={() => form.setValue("image_url", "")}
                               >
                                 Remove Image
                               </Button>
@@ -403,10 +404,19 @@ function SidebarInfoPane({ selectedItem, addingNewItem }: ISidebarInfoPane) {
                           className="fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] w-full max-w-md rounded-lg border bg-background p-6 shadow-lg duration-200"
                           aria-describedby="category-radio-group"
                         >
-                          <DialogHeader className="space-y-3">
+                          <DialogHeader className="flex flex-row justify-between items-center">
                             <DialogTitle className="text-xl">
                               Category
                             </DialogTitle>
+                            <DialogClose asChild>
+                              <Button
+                                className="h-8 w-8 -translate-y-2"
+                                type="button"
+                                variant="ghost"
+                              >
+                                <X className="h-4 w-4" />
+                              </Button>
+                            </DialogClose>
                           </DialogHeader>
                           <div className="mt-4 space-y-4">
                             <DialogDescription>

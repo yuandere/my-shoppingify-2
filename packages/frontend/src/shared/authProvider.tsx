@@ -118,10 +118,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [queryClient]
   );
 
-  const loginWithEmail = async (email: string) => {
+  const loginWithEmail = async (email: string, captchaToken: string) => {
     const { data, error } = await supabase.auth.signInWithOtp({
       email: email,
       options: {
+        captchaToken,
         emailRedirectTo: import.meta.env.VITE_EMAIL_REDIRECT_TO,
       },
     });

@@ -6,7 +6,7 @@ export interface IAuthContext {
 	isAuthenticated: boolean | undefined;
 	isInitializing: boolean;
 	loginWithDemo: (captchaToken: string) => Promise<User | null>;
-	loginWithEmail: (email: string) => Promise<void>;
+	loginWithEmail: (email: string, captchaToken: string) => Promise<void>;
 	logout: () => Promise<void>;
 	user: User | null;
 	verifyOtp: (tokenHash: string) => Promise<void>;

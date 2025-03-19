@@ -8,6 +8,7 @@ import {
 import { Turnstile } from "@marsidev/react-turnstile";
 import { z } from "zod";
 
+import { Input } from "@/components/ui/input";
 import { useAuth } from "../hooks/useAuth";
 
 const fallback = "/items" as const;
@@ -45,17 +46,14 @@ function LoginComponent() {
       setError("Please complete the captcha");
       return;
     }
-
     setIsSubmitting(true);
     try {
       e.preventDefault();
       const data = new FormData(e.currentTarget);
       const fieldValue = data.get("email");
-
       if (!fieldValue) return;
       const email = fieldValue.toString();
-      await auth.loginWithEmail(email);
-
+      await auth.loginWithEmail(email, captchaToken);
       await router.invalidate();
       await navigate({ to: search.redirect || fallback });
     } catch (error) {
@@ -103,7 +101,7 @@ function LoginComponent() {
               <label htmlFor="username-input" className="text-sm font-medium">
                 Email
               </label>
-              <input
+              <Input
                 id="email-input"
                 name="email"
                 placeholder="Enter your email"
