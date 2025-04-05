@@ -7,6 +7,7 @@ import { authMiddleware } from "./middleware/auth";
 import { Bindings, Variables } from "./bindings";
 import items from "./routes/items";
 import categories from "./routes/categories";
+import generate from "./routes/generate";
 import lists from "./routes/lists";
 import listItems from "./routes/list-items";
 
@@ -66,5 +67,6 @@ app.route("/api/v1/items", items);
 app.route("/api/v1/listItems", listItems);
 app.route("/api/v1/categories", categories);
 app.route("/api/v1/lists", lists);
+app.route("/api/v1/generate", generate);
 
 export default app;

@@ -5,6 +5,7 @@ export type Bindings = {
   SUPABASE_ANON_KEY: string;
   SUPABASE_URL: string;
   SUPABASE_SERVICE_KEY: string;
+  GEMINI_API_KEY: string;
 };
 
 export type Variables = {

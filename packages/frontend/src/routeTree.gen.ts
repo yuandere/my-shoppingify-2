@@ -20,6 +20,7 @@ import { Route as AuthStatsImport } from './routes/_auth.stats'
 import { Route as AuthSettingsImport } from './routes/_auth.settings'
 import { Route as AuthListsImport } from './routes/_auth.lists'
 import { Route as AuthItemsImport } from './routes/_auth.items'
+import { Route as AuthGenerateImport } from './routes/_auth.generate'
 
 // Create/Update Routes
 
@@ -76,6 +77,12 @@ const AuthItemsRoute = AuthItemsImport.update({
   getParentRoute: () => AuthRoute,
 } as any)
 
+const AuthGenerateRoute = AuthGenerateImport.update({
+  id: '/generate',
+  path: '/generate',
+  getParentRoute: () => AuthRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -107,6 +114,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/login'
       preLoaderRoute: typeof LoginImport
       parentRoute: typeof rootRoute
+    }
+    '/_auth/generate': {
+      id: '/_auth/generate'
+      path: '/generate'
+      fullPath: '/generate'
+      preLoaderRoute: typeof AuthGenerateImport
+      parentRoute: typeof AuthImport
     }
     '/_auth/items': {
       id: '/_auth/items'
@@ -149,6 +163,7 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 interface AuthRouteChildren {
+  AuthGenerateRoute: typeof AuthGenerateRoute
   AuthItemsRoute: typeof AuthItemsRoute
   AuthListsRoute: typeof AuthListsRoute
   AuthSettingsRoute: typeof AuthSettingsRoute
@@ -156,6 +171,7 @@ interface AuthRouteChildren {
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
+  AuthGenerateRoute: AuthGenerateRoute,
   AuthItemsRoute: AuthItemsRoute,
   AuthListsRoute: AuthListsRoute,
   AuthSettingsRoute: AuthSettingsRoute,
@@ -169,6 +185,7 @@ export interface FileRoutesByFullPath {
   '': typeof AuthRouteWithChildren
   '/about': typeof AboutRoute
   '/login': typeof LoginRoute
+  '/generate': typeof AuthGenerateRoute
   '/items': typeof AuthItemsRoute
   '/lists': typeof AuthListsRoute
   '/settings': typeof AuthSettingsRoute
@@ -181,6 +198,7 @@ export interface FileRoutesByTo {
   '': typeof AuthRouteWithChildren
   '/about': typeof AboutRoute
   '/login': typeof LoginRoute
+  '/generate': typeof AuthGenerateRoute
   '/items': typeof AuthItemsRoute
   '/lists': typeof AuthListsRoute
   '/settings': typeof AuthSettingsRoute
@@ -194,6 +212,7 @@ export interface FileRoutesById {
   '/_auth': typeof AuthRouteWithChildren
   '/about': typeof AboutRoute
   '/login': typeof LoginRoute
+  '/_auth/generate': typeof AuthGenerateRoute
   '/_auth/items': typeof AuthItemsRoute
   '/_auth/lists': typeof AuthListsRoute
   '/_auth/settings': typeof AuthSettingsRoute
@@ -208,6 +227,7 @@ export interface FileRouteTypes {
     | ''
     | '/about'
     | '/login'
+    | '/generate'
     | '/items'
     | '/lists'
     | '/settings'
@@ -219,6 +239,7 @@ export interface FileRouteTypes {
     | ''
     | '/about'
     | '/login'
+    | '/generate'
     | '/items'
     | '/lists'
     | '/settings'
@@ -230,6 +251,7 @@ export interface FileRouteTypes {
     | '/_auth'
     | '/about'
     | '/login'
+    | '/_auth/generate'
     | '/_auth/items'
     | '/_auth/lists'
     | '/_auth/settings'
@@ -277,6 +299,7 @@ export const routeTree = rootRoute
     "/_auth": {
       "filePath": "_auth.tsx",
       "children": [
+        "/_auth/generate",
         "/_auth/items",
         "/_auth/lists",
         "/_auth/settings",
@@ -288,6 +311,10 @@ export const routeTree = rootRoute
     },
     "/login": {
       "filePath": "login.tsx"
+    },
+    "/_auth/generate": {
+      "filePath": "_auth.generate.tsx",
+      "parent": "/_auth"
     },
     "/_auth/items": {
       "filePath": "_auth.items.tsx",

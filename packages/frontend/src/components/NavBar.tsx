@@ -5,6 +5,7 @@ import {
   Settings,
   SquareMousePointer,
   LogOut,
+  WandSparkles,
   type LucideIcon,
 } from "lucide-react";
 import clsx from "clsx";
@@ -37,6 +38,11 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
+  {
+    title: "Generate",
+    to: "/generate",
+    icon: WandSparkles,
+  },
   {
     title: "Items",
     to: "/items",
