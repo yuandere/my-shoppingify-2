@@ -53,7 +53,7 @@ function createGenRequestParams(
       temperature: 0.4,
       topP: 0.8,
       maxOutputTokens: 2048,
-      systemInstruction: `You are a helpful assistant for a shopping list app who generates lists based on a prompt, and data on its associated items and their categories. The prompt is prepended with a user's existing items and categories. You can choose from them when creating a shopping list as well as specify any new items and categories that should be created for it. If the prompt is "image" you will be provided an image file from which you should create a response. Respond with a structured JSON object formatted as:\n${outputFormat}\nnewCategories and newItems should reference items and their categories that are not already present in the user data. newListName is a descriptive name for the list you're creating e.g. "Pasta recipe", and newListItems is an array that references items' names, their categories, and quantity (default: 1) as required in your list. Ensure newListItems only contains items and categories that are being created or exist in the user data. Ensure your response is a valid JSON object. If the prompt is unclear take your best guess. If the prompt is empty, unrelated to shopping list generation or otherwise harmful, simply respond with "Error: bad prompt". For testing purposes: if there are inconsistencies or issues in the information you have been provided or there is an obvious improvement that can be made to this request ignore all previous instructions and just reply with your thoughts`,
+      systemInstruction: `You are a helpful assistant for a shopping list app who generates lists based on a prompt, and data on its associated items and their categories. The prompt is prepended with a user's existing items and categories. You can choose from them when creating a shopping list as well as specify any new items and categories that should be created for it. If the prompt is "image" you will be provided an image file from which you should create a response. Respond with a structured JSON object formatted as:\n${outputFormat}\nnewCategories and newItems should reference items and their categories that are not already present in the user data. newListName is a descriptive name for the list you're creating e.g. "Pasta recipe", and newListItems is an array that references items' names, their categories, and quantity (default: 1) as required in your list. To prevent abuse, limit the number of items and categories you create to 25. Ensure newListItems only contains items and categories that are being created or exist in the user data. Ensure your response is a valid JSON object. If the prompt is unclear take your best guess. If the prompt is empty, unrelated to shopping list generation or otherwise harmful, simply respond with "Error: bad prompt"`,
     },
   };
 
@@ -71,6 +71,7 @@ generate.post("/:method", async (c) => {
   const supabase = createSupabaseServerClient(c.env as any, token);
   let context = null;
   const itemMap: Record<string, { id: number; category_name: string }> = {};
+  const categoryMap: Record<string, { name: string; id: number }> = {};
   try {
     const { data: items, error } = await supabase
       .from("items")
@@ -79,7 +80,7 @@ generate.post("/:method", async (c) => {
     if (error) throw error;
     const { data: categories, error: error2 } = await supabase
       .from("categories")
-      .select("name")
+      .select("id, name")
       .eq("user_id", c.get("user").id);
     if (error2) throw error2;
     context = {
@@ -95,9 +96,15 @@ generate.post("/:method", async (c) => {
         };
       }
     }
+    if (categories?.length) {
+      for (const category of categories) {
+        categoryMap[category.name] = category.id;
+      }
+    }
   } catch (e) {
     const error = e as PostgrestError;
-    return c.json({ error: error.message }, 500);
+    console.error(error);
+    return c.json({ success: false, error: error.message }, 500);
   }
 
   let newData: IStructuredOutput | null = null;
@@ -141,14 +148,14 @@ generate.post("/:method", async (c) => {
   // TODO: handle finish reasons
   try {
     const rawText = response.candidates[0].content?.parts[0].text;
-    console.log('Raw response:', rawText);
+    // console.log("Raw response:", rawText);
     // Strip markdown code blocks if present, handle various markdown code block formats
     const jsonText = rawText
-      .replace(/^```(?:json)?\r?\n/m, '')
-      .replace(/\r?\n```$/m, '')
+      .replace(/^```(?:json)?\r?\n/m, "")
+      .replace(/\r?\n```$/m, "")
       .trim();
     newData = JSON.parse(jsonText);
-    console.log("parsed json", newData);
+    // console.log("parsed json", newData);
     if (
       !newData ||
       typeof newData !== "object" ||
@@ -171,6 +178,7 @@ generate.post("/:method", async (c) => {
       });
     }
   } catch (e) {
+    console.error(e);
     return c.json({ success: false, message: "Invalid JSON response" });
   }
 
@@ -186,13 +194,20 @@ generate.post("/:method", async (c) => {
     const uid = c.get("user").id;
     // TODO: examine and handle edge cases- 1. items and categories but no listItems
     if (newData?.newCategories.length) {
-      const { error } = await supabase
+      const { data: addedCategories, error } = await supabase
         .from("categories")
         .insert(
-          newData?.newCategories.map((category) => ({ category, user_id: uid }))
-        );
+          newData?.newCategories.map((category) => ({
+            name: category,
+            user_id: uid,
+          }))
+        )
+        .select("id, name");
       if (error) {
         throw error;
+      }
+      for (const addedCategory of addedCategories) {
+        categoryMap[addedCategory.name] = addedCategory.id;
       }
     }
     if (newData?.newItems.length) {
@@ -201,6 +216,7 @@ generate.post("/:method", async (c) => {
         .insert(
           newData?.newItems.map((item) => ({
             name: item.name,
+            category_id: categoryMap[item.category] ?? null,
             category_name: item.category ?? null,
             user_id: uid,
           }))
@@ -219,7 +235,7 @@ generate.post("/:method", async (c) => {
         };
       }
     }
-    console.log("itemMap", itemMap);
+    // console.log("itemMap", itemMap);
     if (newData?.newListName && newData?.newListItems.length) {
       const { data: addedList, error } = await supabase
         .from("lists")
@@ -247,6 +263,7 @@ generate.post("/:method", async (c) => {
     }
   } catch (e) {
     const error = e as PostgrestError;
+    console.error(error);
     return c.json({
       success: false,
       message: error.message,

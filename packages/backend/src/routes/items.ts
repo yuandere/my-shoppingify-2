@@ -24,6 +24,7 @@ items
         image_url: item.image_url,
         description: item.description,
         category_id: item.category_id,
+        //@ts-ignore
         category_name: item.categories?.name ?? null,
       }));
       return c.json(formattedItems);
@@ -54,6 +55,7 @@ items
         image_url: item.image_url,
         description: item.description,
         category_id: item.category_id,
+        //@ts-ignore
         category_name: item.categories?.name ?? null,
       };
       return c.json(formattedItem);

@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { createFileRoute } from "@tanstack/react-router";
-import { Image, Link2 } from "lucide-react";
+import { Image, Link2, Sparkles } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { toast } from "sonner";
 
@@ -36,14 +36,21 @@ function RouteComponent() {
   const handleGenerate = async (method: IMethod["method"]) => {
     setGenerating(true);
     try {
-      const res = await generateList(method, inputValue);
-      console.log(res);
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: ["items"] }),
-        queryClient.invalidateQueries({ queryKey: ["lists"] }),
-        queryClient.invalidateQueries({ queryKey: ["categories"] }),
-      ]);
-      toast.success("List generated successfully");
+      //@ts-expect-error res has type Response<unknown>
+      const res: { data: { success: boolean; message: string } } =
+        await generateList(method, inputValue);
+      // console.log(res);
+      if (res.data.success) {
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: ["items"] }),
+          queryClient.invalidateQueries({ queryKey: ["lists"] }),
+          queryClient.invalidateQueries({ queryKey: ["categories"] }),
+        ]);
+
+        toast.success("List generated successfully");
+      } else {
+        toast.error(res.data.message ?? "Failed to generate list");
+      }
     } catch (error) {
       console.error(error);
     } finally {
@@ -78,11 +85,18 @@ function RouteComponent() {
       <ScrollArea className="flex-1">
         <div className="h-full p-6">
           <main>
-            <div className="flex flex-col items-center gap-8 mt:4 md:gap-16 md:mt-16">
-              <h1 className="text-2xl font-semibold">Generate lists with AI</h1>
+            <div className="flex flex-col items-center gap-10 mt-4 md:gap-20 md:mt-16">
+              <div className="flex space-x-2">
+                <h1 className="text-2xl font-semibold">
+                  Generate lists with AI
+                </h1>
+                <Sparkles></Sparkles>
+              </div>
               <div className="flex flex-col items-center gap-4 w-[90dvw] md:w-[50dvw]">
                 <h2 className="text-xl font-semibold">Create a list for...</h2>
-                <p className="mb-1 text-sm text-muted-foreground">(more descriptive is better)</p>
+                <p className="-mt-2 mb-1 text-sm text-muted-foreground">
+                  (be more descriptive for better results!)
+                </p>
                 <div className="w-full relative overflow-hidden rounded-lg bg-muted/30 p-4">
                   <div
                     ref={scrollRef}
@@ -126,7 +140,7 @@ function RouteComponent() {
               </div>
             </div>
 
-            <div className="flex flex-col items-center gap-4 mt-16">
+            <div className="flex flex-col items-center gap-8 mt-16">
               <h2 className="text-xl font-semibold">
                 Generate shopping lists from a recipe or image
               </h2>
@@ -137,6 +151,7 @@ function RouteComponent() {
                   onClick={() => {
                     console.log("Generate from URL");
                   }}
+                  disabled={true}
                 >
                   <div className="rounded-full bg-primary/10 p-2">
                     <Link2 className="h-6 w-6 text-primary" />
@@ -154,6 +169,7 @@ function RouteComponent() {
                   onClick={() => {
                     console.log("Generate from image");
                   }}
+                  disabled={true}
                 >
                   <div className="rounded-full bg-primary/10 p-2">
                     <Image className="h-6 w-6 text-primary" />
