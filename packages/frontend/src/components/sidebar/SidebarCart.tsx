@@ -363,9 +363,9 @@ function SidebarCart({
           </DialogContent>
         </Dialog>
       </div>
-      <div className="space-y-6 flex-1 flex flex-col">
+      <div className="space-y-6 overflow-y-auto flex-1 flex flex-col">
         {sortedCartItems.length > 0 && (
-          <ScrollArea className="flex-1">
+          <ScrollArea className="h-full">
             {sortedCartItems.map((category) => (
               <div key={category.category_name}>
                 <Label className="text-muted-foreground">

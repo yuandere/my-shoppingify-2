@@ -1,7 +1,7 @@
 import clsx from "clsx";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Image, Link2, Sparkles } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 import { toast } from "sonner";
 
 import { Input } from "@/components/ui/input";
@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Spinner } from "@/components/Spinner";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import { SidebarRightContext } from "@/shared/SidebarRightContext";
 import { generateList } from "@/lib/actions/generate";
 import { queryClient } from "@/lib/queryClient";
 import type { IMethod } from "@/lib/actions/generate";
@@ -28,26 +29,33 @@ export const Route = createFileRoute("/_auth/generate")({
 });
 
 function RouteComponent() {
+  const sidebarRightContext = useContext(SidebarRightContext);
+  const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [inputValue, setInputValue] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
   const [generating, setGenerating] = useState(false);
 
   const handleGenerate = async (method: IMethod["method"]) => {
+    if (generating) return;
     setGenerating(true);
     try {
       //@ts-expect-error res has type Response<unknown>
-      const res: { data: { success: boolean; message: string } } =
-        await generateList(method, inputValue);
+      const res: {
+        data: { success: boolean; message: string; newListId: string | null };
+      } = await generateList(method, inputValue);
       // console.log(res);
-      if (res.data.success) {
+      if (res.data.success && res.data.newListId) {
         await Promise.all([
           queryClient.invalidateQueries({ queryKey: ["items"] }),
           queryClient.invalidateQueries({ queryKey: ["lists"] }),
           queryClient.invalidateQueries({ queryKey: ["categories"] }),
         ]);
-
-        toast.success("List generated successfully");
+        toast.success(res.data.message);
+        navigate({ to: "/items" });
+        sidebarRightContext?.handleResetSidebarStates();
+        sidebarRightContext?.setSelectedListId(res.data.newListId ?? null);
+        sidebarRightContext?.setOpen(true);
       } else {
         toast.error(res.data.message ?? "Failed to generate list");
       }
@@ -126,22 +134,24 @@ function RouteComponent() {
                   className=""
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
+                  disabled={generating}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleGenerate("prompt");
+                    }
+                  }}
                 />
                 <Button
                   className="self-end bg-primary hover:bg-primary/90"
-                  onClick={() => {
-                    if (generating) return;
-                    handleGenerate("prompt");
-                  }}
-                  disabled={inputValue === ""}
+                  onClick={() => handleGenerate("prompt")}
+                  disabled={inputValue === "" || generating}
                 >
                   {generating ? <Spinner /> : "Generate"}
                 </Button>
               </div>
             </div>
-
             <div className="flex flex-col items-center gap-8 mt-16">
-              <h2 className="text-xl font-semibold">
+              <h2 className="text-xl text-center font-semibold">
                 Generate shopping lists from a recipe or image
               </h2>
               <div className="grid grid-cols-1 w-[90dvw] md:w-[50dvw] sm:grid-cols-2 gap-4">

@@ -10,14 +10,6 @@ import type { Bindings, Variables } from "../bindings";
 
 const generate = new Hono<{ Bindings: Bindings; Variables: Variables }>();
 
-// 1. GET EXISTING DATA FROM SUPABASE - ITEMS WITH CATEGORIES, CATEGORIES
-// 2. GET RESPONSE FROM GEMINI
-// 3. CREATE NEW ITEMS + CATEGORIES
-// 4. CREATE NEW LISTS
-// 5. CREATE NEW LISTITEMS
-// 6. RETURN NEW DATA TO USER
-
-// generated response should be in this format:
 interface IStructuredOutput {
   newCategories: string[];
   newItems: { name: string; category: string }[];
@@ -53,7 +45,7 @@ function createGenRequestParams(
       temperature: 0.4,
       topP: 0.8,
       maxOutputTokens: 2048,
-      systemInstruction: `You are a helpful assistant for a shopping list app who generates lists based on a prompt, and data on its associated items and their categories. The prompt is prepended with a user's existing items and categories. You can choose from them when creating a shopping list as well as specify any new items and categories that should be created for it. If the prompt is "image" you will be provided an image file from which you should create a response. Respond with a structured JSON object formatted as:\n${outputFormat}\nnewCategories and newItems should reference items and their categories that are not already present in the user data. newListName is a descriptive name for the list you're creating e.g. "Pasta recipe", and newListItems is an array that references items' names, their categories, and quantity (default: 1) as required in your list. To prevent abuse, limit the number of items and categories you create to 25. Ensure newListItems only contains items and categories that are being created or exist in the user data. Ensure your response is a valid JSON object. If the prompt is unclear take your best guess. If the prompt is empty, unrelated to shopping list generation or otherwise harmful, simply respond with "Error: bad prompt"`,
+      systemInstruction: `You are a helpful assistant for a shopping list app who generates lists based on a prompt, and data on its associated items and their categories. The prompt is prepended with a user's existing items and categories. You can choose from them when creating a shopping list as well as specify any new items and categories that should be created for it. If the prompt is "image" you will be provided an image file from which you should create a response. Respond with a structured JSON object formatted as:\n${outputFormat}\nnewCategories and newItems should reference items and their categories that are not already present in the user data. newListName is a descriptive name for the list you're creating e.g. "Pasta recipe", and newListItems is an array that references items' names, their categories, and quantity (default: 1) as required in your list. Limit the number of items and categories you create to 25. Ensure newListItems only contains items and categories that are being created or exist in the user data. Ensure your response is a valid JSON object. If the prompt is unclear take your best guess. If the prompt is empty, unrelated to shopping list generation or otherwise construed as harmful or abusive, simply respond with "Error: bad prompt"`,
     },
   };
 
@@ -69,6 +61,8 @@ generate.post("/:method", async (c) => {
   });
   const token = c.get("token");
   const supabase = createSupabaseServerClient(c.env as any, token);
+
+  // Get existing data from supabase
   let context = null;
   const itemMap: Record<string, { id: number; category_name: string }> = {};
   const categoryMap: Record<string, { name: string; id: number }> = {};
@@ -110,6 +104,7 @@ generate.post("/:method", async (c) => {
   let newData: IStructuredOutput | null = null;
   let response: GenerateContentResponse;
 
+  // Get response from Gemini
   switch (method) {
     case "prompt":
       const params = createGenRequestParams(
@@ -144,7 +139,8 @@ generate.post("/:method", async (c) => {
       message: "Gemini did not return valid JSON",
     });
   }
-  // parse and validate gemini response
+
+  // Parse and validate gemini response
   // TODO: handle finish reasons
   try {
     const rawText = response.candidates[0].content?.parts[0].text;
@@ -186,10 +182,8 @@ generate.post("/:method", async (c) => {
     return c.json({ success: false, message: "Invalid prompt" });
   }
 
-  // 3. CREATE NEW ITEMS + CATEGORIES
-  // 4. CREATE NEW LISTS
-  // 5. CREATE NEW LISTITEMS
-
+  // Send new data to supabase
+  let newListId: string | null = null;
   try {
     const uid = c.get("user").id;
     // TODO: examine and handle edge cases- 1. items and categories but no listItems
@@ -246,6 +240,7 @@ generate.post("/:method", async (c) => {
         throw error;
       }
       const listId = addedList.id;
+      newListId = listId;
       const { error: error2 } = await supabase.from("list_items").insert(
         newData.newListItems.map((listItem) => ({
           list_id: listId,
@@ -270,9 +265,12 @@ generate.post("/:method", async (c) => {
     });
   }
 
-  // 6. RETURN NEW DATA TO USER or just tell client to invalidate
-
-  return c.json({ success: true, message: "Data generated successfully" });
+  // return new data to client or just have client invalidate
+  const message =
+    newData?.newListItems.length < newData?.newItems.length
+      ? "List length mismatch, please double-check for accuracy"
+      : "Data generated successfully";
+  return c.json({ success: true, message: message, newListId: newListId ?? null });
 });
 
 export default generate;

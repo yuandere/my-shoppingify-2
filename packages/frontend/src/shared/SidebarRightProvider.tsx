@@ -73,14 +73,20 @@ export function SidebarRightProvider({
     flashCart();
   };
 
+  const handleResetSidebarStates = () => {
+    setInfoPaneOpen(false);
+    setAddingNewItem(false);
+    setSelectedItem(null);
+  };
+
   const flashCart = () => {
     if (flashTimeoutRef.current) {
       window.clearTimeout(flashTimeoutRef.current);
     }
-    const event = new CustomEvent('flash-cart');
+    const event = new CustomEvent("flash-cart");
     window.dispatchEvent(event);
     flashTimeoutRef.current = window.setTimeout(() => {
-      const endEvent = new CustomEvent('flash-cart-end');
+      const endEvent = new CustomEvent("flash-cart-end");
       window.dispatchEvent(endEvent);
     }, 1000);
   };
@@ -99,6 +105,7 @@ export function SidebarRightProvider({
     handleAddItemToList,
     handleAddingNewItem,
     flashCart,
+    handleResetSidebarStates,
   };
   return (
     <SidebarRightContext.Provider value={contextValue}>
