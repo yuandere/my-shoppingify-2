@@ -24,8 +24,16 @@ export function isDateAtLeast24HoursOld(isoDateString: string): boolean {
   }
 }
 
+export function isValidURL(str: string) {
+  if (/^https?:\/\/([\w-]+\.)+[\w-]{2,}(\/\S*)?$/.test(str)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 export async function loaderDelayFn<T>(
-  fn: (...args: Array<any>) => Promise<T> | T
+  fn: (...args: Array<unknown>) => Promise<T> | T
 ) {
   const delay = Number(sessionStorage.getItem("loaderDelay") ?? 0);
   const delayPromise = new Promise((r) => setTimeout(r, delay));
