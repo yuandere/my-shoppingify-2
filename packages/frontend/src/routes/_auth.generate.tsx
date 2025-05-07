@@ -18,6 +18,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Spinner } from "@/components/Spinner";
+import PendingRoute from "@/components/PendingRoute";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { SidebarRightContext } from "@/shared/SidebarRightContext";
 import { generateList } from "@/lib/actions/generate";
@@ -36,6 +37,7 @@ const prompts: string[] = [
 
 export const Route = createFileRoute("/_auth/generate")({
   component: RouteComponent,
+  pendingComponent: PendingRoute,
 });
 
 function RouteComponent() {
