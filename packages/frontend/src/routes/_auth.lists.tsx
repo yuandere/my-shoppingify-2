@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { queryClient } from "@/lib/queryClient";
 import { Input } from "@/components/ui/input";
+import PendingRoute from "@/components/PendingRoute";
 import { SidebarRightContext } from "@/shared/SidebarRightContext";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { listsQueryOptions, listItemsQueryOptions } from "@/lib/queryOptions";
@@ -40,6 +41,7 @@ export const Route = createFileRoute("/_auth/lists")({
   loader: async (options) => {
     return options.context.queryClient.ensureQueryData(listsQueryOptions());
   },
+  pendingComponent: PendingRoute,
 });
 
 const sortLists = (lists: ListsViewList[], searchTerm: string) => {
@@ -138,7 +140,12 @@ function RouteComponent() {
         </Button>
       </header>
       <ScrollArea className="flex-1">
-        <main className="flex-1 overflow-auto p-6 xl:flex xl:flex-col xl:items-center xl:pt-10 2xl:pt-24">
+        <main
+          className={clsx(
+            "flex-1 overflow-auto p-6 xl:flex xl:flex-col xl:items-center xl:pt-10 2xl:pt-24",
+            isMobile && "w-screen"
+          )}
+        >
           {displayedLists.length === 0 && (
             <div className="flex flex-col items-center justify-between h-auto rounded-md p-4 space-y-4">
               <p>No lists found. Create a list?</p>
@@ -160,7 +167,7 @@ function RouteComponent() {
             <div
               key={`list-${list.id}`}
               data-list-id={list.id}
-              className="flex items-center gap-4 border-b rounded-md border my-1 p-4 transition-colors cursor-pointer xl:w-[800px] 2xl:w-[1024px] hover:bg-accent hover:text-accent-foreground"
+              className="flex items-center gap-4 border-b rounded-md border my-1 p-4 transition-colors cursor-pointer w-full xl:w-[800px] 2xl:w-[1024px] hover:bg-accent hover:text-accent-foreground"
               onClick={() => handleListClick(list.id)}
               onMouseOver={() => handleMouseOverList(list.id)}
             >
@@ -170,8 +177,10 @@ function RouteComponent() {
                 )}
               </div>
               {isMobile ? (
-                <div className="flex flex-col align-start mr-2">
-                  <p className="truncate">{list.name}</p>
+                <div className="flex flex-col flex-1 min-w-0 w-full align-start mr-2">
+                  <div className="flex-1 min-w-0">
+                    <p className="truncate">{list.name}</p>
+                  </div>
                   <div className="flex items-center text-sm text-muted-foreground">
                     <CalendarDays className="mr-2 h-4 w-4" />
                     <p className="">{list.updated_at_formatted}</p>
@@ -179,7 +188,9 @@ function RouteComponent() {
                 </div>
               ) : (
                 <>
-                  <p className="truncate">{list.name}</p>
+                  <p className="truncate max-w-20 min-[900px]:max-w-none">
+                    {list.name}
+                  </p>
                   <div className="flex items-center ml-auto">
                     <CalendarDays className="mr-2 h-4 w-4" />
                     <p className="">{list.updated_at_formatted}</p>
@@ -187,15 +198,17 @@ function RouteComponent() {
                 </>
               )}
 
-              <p
-                className={clsx(
-                  "w-24",
-                  list.completed ? "text-green-600" : "text-red-700",
-                  isMobile && "ml-auto"
-                )}
-              >
-                {list.completed ? "Complete" : "Incomplete"}
-              </p>
+              {!isMobile && (
+                <p
+                  className={clsx(
+                    "w-24",
+                    list.completed ? "text-green-600" : "text-red-700",
+                    isMobile && "ml-auto"
+                  )}
+                >
+                  {list.completed ? "Complete" : "Incomplete"}
+                </p>
+              )}
             </div>
           ))}
           {isMobile && <div className="h-8" />}

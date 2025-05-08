@@ -17,6 +17,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import PendingRoute from "@/components/PendingRoute";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { fetchItems, fetchLists } from "@/lib/dashboardFetchers";
 import { getMonthlyListActivity, getTopCategories } from "@/lib/utils";
@@ -40,6 +41,7 @@ export const Route = createFileRoute("/_auth/stats")({
       </div>
     );
   },
+  pendingComponent: PendingRoute,
 });
 
 function RouteComponent() {

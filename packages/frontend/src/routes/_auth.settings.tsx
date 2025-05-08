@@ -21,6 +21,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import PendingRoute from "@/components/PendingRoute";
 import { useAuth } from "@/hooks/useAuth";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { tokenHelper } from "@/lib/utils";
@@ -35,6 +36,7 @@ const clearLocalStorage = () => {
 
 export const Route = createFileRoute("/_auth/settings")({
   component: RouteComponent,
+  pendingComponent: PendingRoute,
 });
 
 function RouteComponent() {

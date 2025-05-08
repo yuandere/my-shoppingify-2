@@ -19,6 +19,7 @@ export interface ISidebarRightContext {
     category_name?: string | null;
   }) => Promise<void>;
   handleAddingNewItem: () => void;
+  handleResetSidebarStates: () => void;
   flashCart: () => void;
 }
 
