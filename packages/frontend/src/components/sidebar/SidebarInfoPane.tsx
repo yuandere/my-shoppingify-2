@@ -269,22 +269,21 @@ function SidebarInfoPane({ selectedItem, addingNewItem }: ISidebarInfoPane) {
   };
 
   return (
-    <>
-      <div className="h-full flex flex-col">
-        <ScrollArea className="flex-1 min-h-0 flex flex-col">
-          <div className="p-4 space-y-4">
-            <Button variant="ghost" onClick={onClose} className="mb-2">
-              <ChevronLeft className="mr-2 h-4 w-4" />
-              Back
-            </Button>
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(handleSubmit)}
+        autoComplete="off"
+        onReset={onClose}
+      >
+        <div className="h-full flex flex-col">
+          <div className="space-y-4 flex flex-col">
+            <ScrollArea className="flex-1 min-h-0 flex flex-col">
+              <div className="p-4 space-y-4">
+                <Button variant="ghost" onClick={onClose} className="mb-2">
+                  <ChevronLeft className="mr-2 h-4 w-4" />
+                  Back
+                </Button>
 
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(handleSubmit)}
-                className="space-y-4 flex flex-col"
-                autoComplete="off"
-                onReset={onClose}
-              >
                 <FormField
                   control={form.control}
                   name="name"
@@ -526,72 +525,72 @@ function SidebarInfoPane({ selectedItem, addingNewItem }: ISidebarInfoPane) {
                   )}
                 />
                 <div className="grow" id="grower"></div>
-              </form>
-            </Form>
+              </div>
+            </ScrollArea>
           </div>
-        </ScrollArea>
-      </div>
+        </div>
 
-      <div className="p-4 flex flex-col gap-2">
-        {addingNewItem ? (
-          <Button type="submit" className="w-full">
-            Add Item
-          </Button>
-        ) : form.formState.isDirty ? (
-          <Button type="submit" className="w-full">
-            Submit Changes
-          </Button>
-        ) : selectedListId ? (
-          <Button
-            type="button"
-            className="w-full"
-            onClick={() => {
-              if (!selectedItem) return;
-              handleAddItemToList({
-                itemId: selectedItem.id,
-                itemName: selectedItem.name,
-                category_name: selectedItem.category_name ?? undefined,
-              });
-            }}
-          >
-            Add to selected List
-          </Button>
-        ) : (
-          <Button
-            type="button"
-            className="w-full"
-            onClick={() => handleAddItemToNewList()}
-          >
-            Add to new List
-          </Button>
-        )}
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button
-              variant="destructive"
-              className="w-full"
-              disabled={addingNewItem}
-            >
-              Delete Item
+        <div className="p-4 flex flex-col gap-2">
+          {addingNewItem ? (
+            <Button type="submit" className="w-full">
+              Add Item
             </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-              <AlertDialogDescription>
-                Click continue to confirm deletion.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={onDeleteItem}>
-                Continue
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </div>
-    </>
+          ) : form.formState.isDirty ? (
+            <Button type="submit" className="w-full">
+              Submit Changes
+            </Button>
+          ) : selectedListId ? (
+            <Button
+              type="button"
+              className="w-full"
+              onClick={() => {
+                if (!selectedItem) return;
+                handleAddItemToList({
+                  itemId: selectedItem.id,
+                  itemName: selectedItem.name,
+                  category_name: selectedItem.category_name ?? undefined,
+                });
+              }}
+            >
+              Add to selected List
+            </Button>
+          ) : (
+            <Button
+              type="button"
+              className="w-full"
+              onClick={() => handleAddItemToNewList()}
+            >
+              Add to new List
+            </Button>
+          )}
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                variant="destructive"
+                className="w-full"
+                disabled={addingNewItem}
+              >
+                Delete Item
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Click continue to confirm deletion.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={onDeleteItem}>
+                  Continue
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+      </form>
+    </Form>
   );
 }
 
