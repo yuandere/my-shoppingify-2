@@ -5,6 +5,7 @@ import {
   Settings,
   SquareMousePointer,
   LogOut,
+  UserRound,
   WandSparkles,
   type LucideIcon,
 } from "lucide-react";
@@ -96,9 +97,9 @@ export function NavBar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       >
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Avatar className="cursor-pointer grid place-items-center">
+            <Avatar className="cursor-pointer grid place-items-center border-2 border-muted-foreground/50">
               {/* <AvatarImage src="" /> */}
-              <AvatarFallback className="text-3xl">🤩</AvatarFallback>
+              <AvatarFallback className="text-3xl"><UserRound /></AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">

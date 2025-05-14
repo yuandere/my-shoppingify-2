@@ -19,6 +19,7 @@ export function SidebarRightProvider({
   const [selectedItem, setSelectedItem] = useState<null | Item>(null);
   const [selectedListId, setSelectedListId] = useState<string | null>(null);
   const [addingListItem, setAddingListItem] = useState<boolean>(false);
+  const [cartCount, setCartCount] = useState<number | null>(null);
   const flashTimeoutRef = useRef<number>();
 
   const handleAddItemToList = async ({
@@ -106,6 +107,8 @@ export function SidebarRightProvider({
     handleAddingNewItem,
     flashCart,
     handleResetSidebarStates,
+    cartCount,
+    setCartCount,
   };
   return (
     <SidebarRightContext.Provider value={contextValue}>

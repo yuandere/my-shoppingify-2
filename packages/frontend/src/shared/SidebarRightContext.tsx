@@ -21,6 +21,8 @@ export interface ISidebarRightContext {
   handleAddingNewItem: () => void;
   handleResetSidebarStates: () => void;
   flashCart: () => void;
+  cartCount: number | null;
+  setCartCount: (count: number | null) => void;
 }
 
 export const SidebarRightContext = createContext<ISidebarRightContext | null>(

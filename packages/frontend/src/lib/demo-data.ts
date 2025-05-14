@@ -62,7 +62,7 @@ export const demo_items = [
     category_name: "Beverages",
   },
   {
-    name: "Arnold Palmer jug",
+    name: "Arnold Palmer",
     description: null,
     image_url: null,
     category_name: "Beverages",
@@ -114,7 +114,7 @@ export const demo_lists = [
     completed: false,
     created_at: "2025-01-01T00:00:00.000Z",
     updated_at: "2025-01-01T00:00:00.000Z",
-    items: ["Hot Cheetos", "Mixed Nuts", "Arnold Palmer jug"],
+    items: ["Hot Cheetos", "Mixed Nuts", "Arnold Palmer"],
   },
   {
     name: "Groceries",
@@ -135,6 +135,6 @@ export const demo_lists = [
     completed: true,
     created_at: "2024-11-11T00:00:00.000Z",
     updated_at: "2024-11-11T00:00:00.000Z",
-    items: ["Salmon", "Apples", "Arnold Palmer jug"],
+    items: ["Salmon", "Apples", "Arnold Palmer"],
   },
 ] as const;

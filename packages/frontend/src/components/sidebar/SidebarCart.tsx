@@ -255,6 +255,7 @@ function SidebarCart({
   );
 
   const sortedCartItems = useMemo(() => {
+    sidebarRightContext?.setCartCount(listItems.length ?? null);
     if (!listItems) return [];
     const res: CategoryObj[] = [];
     const uncategorized: CategoryObj = {
