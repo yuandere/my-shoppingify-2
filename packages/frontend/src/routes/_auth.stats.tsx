@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import PendingRoute from "@/components/PendingRoute";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import useScrollHideNav from "@/hooks/useScrollHideNav";
 import { fetchItems, fetchLists } from "@/lib/dashboardFetchers";
 import { getMonthlyListActivity, getTopCategories } from "@/lib/utils";
 import { listsKey, itemsKey } from "@/lib/queryOptions";
@@ -46,6 +47,7 @@ export const Route = createFileRoute("/_auth/stats")({
 
 function RouteComponent() {
   const isMobile = useIsMobile();
+  const scrollAreaRef = React.useRef<HTMLDivElement>(null);
   const { data: lists } = useSuspenseQuery({
     queryKey: listsKey,
     queryFn: fetchLists,
@@ -61,6 +63,8 @@ function RouteComponent() {
   );
   const categoryStats = React.useMemo(() => getTopCategories(items), [items]);
 
+  useScrollHideNav(scrollAreaRef);
+
   return (
     <div
       className={clsx(
@@ -68,7 +72,7 @@ function RouteComponent() {
         isMobile && "h-[calc(100vh-4rem)]"
       )}
     >
-      <ScrollArea className="h-full">
+      <ScrollArea className="h-full" ref={scrollAreaRef}>
         <main
           className={clsx(
             "flex flex-col items-center gap-6 p-6 pr-10 mt-4",

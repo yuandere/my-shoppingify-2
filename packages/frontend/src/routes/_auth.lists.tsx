@@ -11,11 +11,13 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useSidebar } from "@/components/ui/sidebar";
 import { queryClient } from "@/lib/queryClient";
 import { Input } from "@/components/ui/input";
 import PendingRoute from "@/components/PendingRoute";
 import { SidebarRightContext } from "@/shared/SidebarRightContext";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import useScrollHideNav from "@/hooks/useScrollHideNav";
 import { listsQueryOptions, listItemsQueryOptions } from "@/lib/queryOptions";
 import { createList } from "@/lib/actions/lists";
 import type { ListsViewList } from "@/types/dashboard";
@@ -58,10 +60,12 @@ const sortLists = (lists: ListsViewList[], searchTerm: string) => {
 
 function RouteComponent() {
   const isMobile = useIsMobile();
+  const { toggleSidebar } = useSidebar();
   const sidebarRightContext = React.useContext(SidebarRightContext);
   const [isCreatingList, setIsCreatingList] = React.useState(false);
   const { data } = useSuspenseQuery(listsQueryOptions());
   const [searchTerm, setSearchTerm] = React.useState<string>("");
+  const scrollAreaRef = React.useRef<HTMLDivElement>(null);
   const displayedLists = React.useMemo(
     () => sortLists(data, searchTerm),
     [data, searchTerm]
@@ -88,7 +92,8 @@ function RouteComponent() {
     } finally {
       setIsCreatingList(false);
       if (isMobile) {
-        sidebarRightContext?.flashCart();
+        // sidebarRightContext?.flashCart();
+        toggleSidebar();
       }
     }
   };
@@ -99,7 +104,8 @@ function RouteComponent() {
       sidebarRightContext.setInfoPaneOpen(false);
       sidebarRightContext.setSelectedListId(listId);
       if (isMobile) {
-        sidebarRightContext?.flashCart();
+        // sidebarRightContext?.flashCart();
+        toggleSidebar();
       }
     }
   };
@@ -108,6 +114,8 @@ function RouteComponent() {
     // console.log("listitems being ensured for list", listId);
     await queryClient.ensureQueryData(listItemsQueryOptions(listId));
   };
+
+  useScrollHideNav(scrollAreaRef);
 
   return (
     <div
@@ -139,7 +147,7 @@ function RouteComponent() {
           <Plus />
         </Button>
       </header>
-      <ScrollArea className="flex-1">
+      <ScrollArea className="flex-1" ref={scrollAreaRef}>
         <main
           className={clsx(
             "flex-1 overflow-auto p-6 xl:flex xl:flex-col xl:items-center xl:pt-10 2xl:pt-24",

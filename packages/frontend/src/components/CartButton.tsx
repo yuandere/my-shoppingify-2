@@ -44,7 +44,7 @@ function CartButton() {
         ]
       )}
     >
-      {cartCount && (
+      {cartCount !== null && (
         <div
           className="px-[5px] py-[1px] absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full flex items-center
 justify-center"

@@ -23,6 +23,8 @@ export interface ISidebarRightContext {
   flashCart: () => void;
   cartCount: number | null;
   setCartCount: (count: number | null) => void;
+  isNavbarVisible: boolean;
+  setIsNavbarVisible: (visible: boolean) => void;
 }
 
 export const SidebarRightContext = createContext<ISidebarRightContext | null>(

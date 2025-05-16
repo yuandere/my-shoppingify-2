@@ -1,7 +1,7 @@
+import { useState, useRef, useEffect, useContext } from "react";
 import clsx from "clsx";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Image, Link2, Sparkles } from "lucide-react";
-import { useState, useRef, useEffect, useContext } from "react";
 import { toast } from "sonner";
 
 import {
@@ -20,6 +20,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Spinner } from "@/components/Spinner";
 import PendingRoute from "@/components/PendingRoute";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import useScrollHideNav from "@/hooks/useScrollHideNav";
 import { SidebarRightContext } from "@/shared/SidebarRightContext";
 import { generateList } from "@/lib/actions/generate";
 import { queryClient } from "@/lib/queryClient";
@@ -50,6 +51,7 @@ function RouteComponent() {
   const [url, setUrl] = useState<string | null>("");
   const [urlError, setUrlError] = useState<boolean>(false);
   const [image, setImage] = useState<File | null>(null);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
 
   const handleGenerate = async (method: "prompt" | "url" | "image") => {
     if (generating) return;
@@ -98,10 +100,11 @@ function RouteComponent() {
         }
       }
     };
-
     const intervalId = setInterval(scroll, 50);
     return () => clearInterval(intervalId);
   }, []);
+
+  useScrollHideNav(scrollAreaRef);
 
   return (
     <div
@@ -110,18 +113,20 @@ function RouteComponent() {
         isMobile && "h-[calc(100vh-4rem)]"
       )}
     >
-      <ScrollArea className="flex-1">
-        <div className="h-full p-6">
+      <ScrollArea className="flex-1" ref={scrollAreaRef}>
+        <div className={clsx("h-full", isMobile ? "p-4" : "p-6")}>
           <main>
-            <div className="flex flex-col items-center gap-10 mt-4 md:gap-20 md:mt-16">
+            <div className="flex flex-col items-center gap-10 mt-8 md:gap-20 md:mt-16">
               <div className="flex space-x-2">
-                <h1 className="text-2xl font-semibold underline underline-offset-4">
+                <h1 className="text-2xl font-semibold underline underline-offset-4 bg-gradient-to-r from-red-400 to-[#8B4F65] bg-clip-text text-transparent">
                   Generate lists with AI
                 </h1>
-                <Sparkles></Sparkles>
+                <Sparkles className="text-[#8B4F65]"></Sparkles>
               </div>
               <div className="flex flex-col items-center gap-4 w-[90dvw] md:w-[50dvw]">
-                <h2 className="text-xl font-semibold">Create a list for...</h2>
+                <h2 className="text-xl font-semibold mt-8 sm:mt-0">
+                  Create a list for...
+                </h2>
                 <p className="-mt-2 mb-1 text-sm text-muted-foreground">
                   (be more descriptive for better results!)
                 </p>
@@ -148,7 +153,6 @@ function RouteComponent() {
                     ))}
                   </div>
                 </div>
-
                 <Input
                   placeholder="Enter your prompt"
                   className=""
@@ -170,7 +174,12 @@ function RouteComponent() {
                 </Button>
               </div>
             </div>
-            <div className="flex flex-col items-center gap-8 mt-16">
+
+            {isMobile && (
+              <div className="w-full h-1 bg-gradient-to-r from-transparent via-[#8B4F65] to-transparent mt-16"></div>
+            )}
+
+            <div className="flex flex-col items-center gap-8 mt-16 md:mt-24">
               <h2 className="text-xl text-center font-semibold">
                 Generate shopping lists from a recipe or image
               </h2>

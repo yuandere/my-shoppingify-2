@@ -1,3 +1,5 @@
+import { useContext } from "react";
+import clsx from "clsx";
 import { Link, useNavigate } from "@tanstack/react-router";
 import {
   ChartLine,
@@ -9,7 +11,6 @@ import {
   WandSparkles,
   type LucideIcon,
 } from "lucide-react";
-import clsx from "clsx";
 import { toast } from "sonner";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -21,6 +22,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { SidebarRightContext } from "@/shared/SidebarRightContext";
 import { useAuth } from "@/hooks/useAuth";
 import ThemeToggle from "./ThemeToggle";
 import CartButton from "./CartButton";
@@ -65,6 +67,8 @@ export function NavBar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const isMobile = useIsMobile();
   const { logout } = useAuth();
   const navigate = useNavigate();
+  const sidebarRightContext = useContext(SidebarRightContext);
+  const isNavbarVisible = sidebarRightContext?.isNavbarVisible;
 
   const handleLogout = async () => {
     try {
@@ -82,10 +86,11 @@ export function NavBar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     <Sidebar
       collapsible="none"
       className={clsx(
-        "flex flex-col",
-        !isMobile && "w-14 h-screen border-r shrink-0",
-        isMobile &&
-          "absolute z-20 left-0 bottom-0 w-screen h-14 border-t flex-row"
+        "flex flex-col transition-transform",
+        isMobile
+          ? "absolute z-20 left-0 bottom-0 w-screen h-14 border-t flex-row"
+          : "w-14 h-screen border-r shrink-0",
+        isMobile && !isNavbarVisible ? "translate-y-full" : "translate-y-0"
       )}
       {...props}
     >
@@ -99,13 +104,15 @@ export function NavBar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <DropdownMenuTrigger asChild>
             <Avatar className="cursor-pointer grid place-items-center border-2 border-muted-foreground/50">
               {/* <AvatarImage src="" /> */}
-              <AvatarFallback className="text-3xl"><UserRound /></AvatarFallback>
+              <AvatarFallback className="text-3xl">
+                <UserRound />
+              </AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             {isMobile && (
               <DropdownMenuItem asChild>
-                <ThemeToggle />
+                <ThemeToggle dropdown={true} />
               </DropdownMenuItem>
             )}
             <DropdownMenuItem asChild>
@@ -161,7 +168,7 @@ export function NavBar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
       <SidebarFooter
         className={clsx(
-          "pb-4 flex items-center justify-center",
+          "pb-2 flex items-center justify-center",
           isMobile && "flex-row"
         )}
       >

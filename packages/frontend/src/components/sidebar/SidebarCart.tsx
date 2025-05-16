@@ -51,6 +51,7 @@ function SidebarCart({
   setAddingNewItem,
 }: ISidebarCart) {
   const sidebarRightContext = useContext(SidebarRightContext);
+  const setCartCount = sidebarRightContext?.setCartCount;
   const pathname = useLocation({ select: (location) => location.pathname });
   const listQuery = useSuspenseQuery(listsQueryOptions());
   const listQueryData = listQuery.data?.find((list) => list.id === listId);
@@ -255,7 +256,6 @@ function SidebarCart({
   );
 
   const sortedCartItems = useMemo(() => {
-    sidebarRightContext?.setCartCount(listItems.length ?? null);
     if (!listItems) return [];
     const res: CategoryObj[] = [];
     const uncategorized: CategoryObj = {
@@ -290,6 +290,12 @@ function SidebarCart({
     return res;
   }, [listItems]);
 
+  useEffect(() => {
+    if (setCartCount) {
+      setCartCount(listItems.length ?? null);
+    }
+  }, [listItems, setCartCount]);
+
   return (
     <div className="h-full p-4 flex flex-col">
       <div className="mb-6 rounded-xl bg-[#8B4F65] p-4 text-white">
@@ -318,7 +324,7 @@ function SidebarCart({
             <Check className="h-4 w-4 text-green-500" />
           )}
           <h2
-            className={`text-xl font-semibold ${listQueryData?.completed ? "text-muted-foreground" : ""}`}
+            className={`max-w-[200px] truncate text-xl font-semibold ${listQueryData?.completed ? "text-muted-foreground" : ""}`}
           >
             {listQueryData?.name || "Shopping List"}
           </h2>

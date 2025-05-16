@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState, useMemo } from "react";
+import { useContext, useEffect, useState, useMemo, useRef } from "react";
 import clsx from "clsx";
 import {
   useSuspenseQuery,
@@ -11,8 +11,10 @@ import { SidebarRightContext } from "@/shared/SidebarRightContext";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useSidebar } from "@/components/ui/sidebar";
 import PendingRoute from "@/components/PendingRoute";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import useScrollHideNav from "@/hooks/useScrollHideNav";
 import { sortItems } from "@/lib/utils";
 import { itemsQueryOptions } from "@/lib/queryOptions";
 import { Item } from "@/types/dashboard";
@@ -43,8 +45,10 @@ export const Route = createFileRoute("/_auth/items")({
 
 function ItemsPage() {
   const isMobile = useIsMobile();
+  const { toggleSidebar } = useSidebar();
   const { data } = useSuspenseQuery(itemsQueryOptions());
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
   const displayedItems = useMemo(
     () => sortItems(data, searchTerm),
     [data, searchTerm]
@@ -54,7 +58,8 @@ function ItemsPage() {
   const handleItemClick = (item: Item) => {
     if (!sidebarRightContext) return;
     if (isMobile) {
-      sidebarRightContext?.flashCart();
+      // sidebarRightContext?.flashCart();
+      toggleSidebar();
     }
     if (
       sidebarRightContext.infoPaneOpen &&
@@ -66,6 +71,48 @@ function ItemsPage() {
     sidebarRightContext.setInfoPaneOpen(true);
     sidebarRightContext.setOpen(true);
   };
+
+  const handleAddItemClick = () => {
+    sidebarRightContext?.handleAddingNewItem();
+    if (isMobile) {
+      toggleSidebar();
+    }
+  };
+
+  useScrollHideNav(scrollAreaRef);
+
+  // useEffect(() => {
+  //   if (!sidebarRightContext) return;
+  //   const root = scrollAreaRef.current;
+  //   if (!root) return;
+
+  //   const viewport = root.querySelector(
+  //     "div[data-radix-scroll-area-viewport]"
+  //   ) as HTMLDivElement;
+  //   if (!viewport) return;
+  //   let lastScrollY = viewport.scrollTop;
+  //   let ticking = false;
+
+  //   const handleScroll = () => {
+  //     const currentScrollY = viewport.scrollTop;
+  //     if (!ticking) {
+  //       window.requestAnimationFrame(() => {
+  //         if (currentScrollY > lastScrollY && currentScrollY > 56) {
+  //           sidebarRightContext.setIsNavbarVisible(false);
+  //         } else {
+  //           sidebarRightContext.setIsNavbarVisible(true);
+  //         }
+  //         lastScrollY = currentScrollY;
+  //         ticking = false;
+  //       });
+  //       ticking = true;
+  //     }
+  //   };
+  //   viewport.addEventListener("scroll", handleScroll);
+  //   return () => {
+  //     viewport.removeEventListener("scroll", handleScroll);
+  //   };
+  // }, [sidebarRightContext]);
 
   return (
     <div
@@ -86,7 +133,7 @@ function ItemsPage() {
         <Button
           className="p-1 grid place-items-center border rounded-md transition-all hover:scale-[125%] hover:text-[var(--accent-color)]"
           variant="ghost"
-          onClick={sidebarRightContext?.handleAddingNewItem}
+          onClick={handleAddItemClick}
           size={"icon"}
           disabled={
             sidebarRightContext?.infoPaneOpen &&
@@ -97,7 +144,7 @@ function ItemsPage() {
           <Plus />
         </Button>
       </header>
-      <ScrollArea className="flex-1">
+      <ScrollArea className="flex-1" ref={scrollAreaRef}>
         <div className="h-full p-6">
           <main>
             {displayedItems.length === 0 && (
@@ -106,7 +153,7 @@ function ItemsPage() {
                 <Button
                   className="w-10 h-10 p-1 grid place-items-center border rounded-full transition-all hover:scale-[125%] hover:text-[var(--accent-color)]"
                   variant="ghost"
-                  onClick={sidebarRightContext?.handleAddingNewItem}
+                  onClick={handleAddItemClick}
                   disabled={
                     sidebarRightContext?.infoPaneOpen &&
                     !sidebarRightContext?.addingNewItem &&
@@ -157,7 +204,8 @@ function ItemsPage() {
                             category_name: item.category_name ?? undefined,
                           });
                           if (isMobile) {
-                            sidebarRightContext?.flashCart();
+                            // sidebarRightContext?.flashCart();
+                            toggleSidebar();
                           }
                         }}
                       >

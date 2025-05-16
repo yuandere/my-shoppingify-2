@@ -20,6 +20,7 @@ export function SidebarRightProvider({
   const [selectedListId, setSelectedListId] = useState<string | null>(null);
   const [addingListItem, setAddingListItem] = useState<boolean>(false);
   const [cartCount, setCartCount] = useState<number | null>(null);
+  const [isNavbarVisible, setIsNavbarVisible] = useState<boolean>(true);
   const flashTimeoutRef = useRef<number>();
 
   const handleAddItemToList = async ({
@@ -109,6 +110,8 @@ export function SidebarRightProvider({
     handleResetSidebarStates,
     cartCount,
     setCartCount,
+    isNavbarVisible,
+    setIsNavbarVisible,
   };
   return (
     <SidebarRightContext.Provider value={contextValue}>
