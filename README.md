@@ -19,23 +19,24 @@ generation and stats at a glance.
 
 <div align="center">
   <a href="https://github.com/yuandere/my-shoppingify-2">
-    <img src="<INSERT PIC LINK HERE>" alt="screenshot">
+    <img src="https://github.com/user-attachments/assets/94e5f75d-1721-4729-aefe-9605951d3874" alt="screenshot">
+
   </a>
 </div>
 
 <!-- FEATURES -->
 
-## 🚀 Features
+## Features
 
 - **Add & Edit Items**: Seamlessly create and manage shopping lists with detailed item descriptions.
-- **Mark as Completed**: Track progress with a simple toggle to mark items and lists as done.
+- **Completion Tracking**: Track progress with a simple toggle to mark items and lists as done.
 - **AI-Powered List Generation**: Generate shopping lists using prompts, URLs, or uploaded images.
-- **Real-Time Stats**: View key metrics like total items, completed tasks, and list progress at a glance.
+- **Stats at a Glance**: View key metrics like total items, completed tasks, and list progress on demand.
 - **Responsive Design**: Built with TailwindCSS and Shadcn UI components for a clean, modern interface.
 
-<!-- 🧰 Tech Stack -->
+<!-- Tech Stack -->
 
-## 🧰 Tech Stack
+## Tech Stack
 
 | Technology             | Description                                                   |
 | ---------------------- | ------------------------------------------------------------- |
@@ -51,7 +52,7 @@ generation and stats at a glance.
 | **TypeScript**         | Static typing for robust code structure.                      |
 | **Gemini 1.5 Flash**   | Low-cost multimodal LLM for simple tasks and data processing. |
 
-## 📦 Getting Started
+## Self Hosting
 
 ### Prerequisites
 
@@ -104,19 +105,10 @@ VITE_SUPABASE_ANON_KEY=your-anon-key
 bun run dev
 ```
 
-## 📌 Notes
+## Notes
 
 - **AI Generation**: Gemini 1.5 Flash may not generate items and lists with 100% accuracy, especially for site URLs or images.
 
-## 🤝 Contributing
+## Contributing
 
-Contributions are welcome!
-
-1. Fork the repository.
-2. Create a new branch for your feature or bug fix.
-3. Commit your changes and push to your fork.
-4. Open a pull request with a clear description.
-
-## 📄 License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+Contributions are welcome. Feel free to create a pull request or issue for new features, bug fixes, or documentation.
