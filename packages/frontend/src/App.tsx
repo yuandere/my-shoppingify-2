@@ -9,7 +9,7 @@ import {
 import { routeTree } from "./routeTree.gen";
 import PendingComponent from "./components/PendingComponent";
 import { AuthProvider } from "@/shared/authProvider";
-import { useAuth } from "./hooks/useAuth";
+import { useAuth } from "./lib/hooks/useAuth";
 import { createIDBPersister } from "./lib/createIDBpersister";
 import { queryClient } from "./lib/queryClient";
 

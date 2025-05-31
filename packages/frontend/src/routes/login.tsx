@@ -9,7 +9,7 @@ import { Turnstile } from "@marsidev/react-turnstile";
 import { z } from "zod";
 
 import { Input } from "@/components/ui/input";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../lib/hooks/useAuth";
 
 const fallback = "/items" as const;
 

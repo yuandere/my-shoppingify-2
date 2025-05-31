@@ -13,8 +13,8 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSidebar } from "@/components/ui/sidebar";
 import PendingRoute from "@/components/PendingRoute";
-import { useIsMobile } from "@/hooks/useIsMobile";
-import useScrollHideNav from "@/hooks/useScrollHideNav";
+import { useIsMobile } from "@/lib/hooks/useIsMobile";
+import useScrollHideNav from "@/lib/hooks/useScrollHideNav";
 import { sortItems } from "@/lib/utils";
 import { itemsQueryOptions } from "@/lib/queryOptions";
 import { Item } from "@/types/dashboard";
@@ -80,39 +80,6 @@ function ItemsPage() {
   };
 
   useScrollHideNav(scrollAreaRef);
-
-  // useEffect(() => {
-  //   if (!sidebarRightContext) return;
-  //   const root = scrollAreaRef.current;
-  //   if (!root) return;
-
-  //   const viewport = root.querySelector(
-  //     "div[data-radix-scroll-area-viewport]"
-  //   ) as HTMLDivElement;
-  //   if (!viewport) return;
-  //   let lastScrollY = viewport.scrollTop;
-  //   let ticking = false;
-
-  //   const handleScroll = () => {
-  //     const currentScrollY = viewport.scrollTop;
-  //     if (!ticking) {
-  //       window.requestAnimationFrame(() => {
-  //         if (currentScrollY > lastScrollY && currentScrollY > 56) {
-  //           sidebarRightContext.setIsNavbarVisible(false);
-  //         } else {
-  //           sidebarRightContext.setIsNavbarVisible(true);
-  //         }
-  //         lastScrollY = currentScrollY;
-  //         ticking = false;
-  //       });
-  //       ticking = true;
-  //     }
-  //   };
-  //   viewport.addEventListener("scroll", handleScroll);
-  //   return () => {
-  //     viewport.removeEventListener("scroll", handleScroll);
-  //   };
-  // }, [sidebarRightContext]);
 
   return (
     <div

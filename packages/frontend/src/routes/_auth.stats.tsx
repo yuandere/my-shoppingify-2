@@ -18,8 +18,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import PendingRoute from "@/components/PendingRoute";
-import { useIsMobile } from "@/hooks/useIsMobile";
-import useScrollHideNav from "@/hooks/useScrollHideNav";
+import { useIsMobile } from "@/lib/hooks/useIsMobile";
+import useScrollHideNav from "@/lib/hooks/useScrollHideNav";
 import { fetchItems, fetchLists } from "@/lib/dashboardFetchers";
 import { getMonthlyListActivity, getTopCategories } from "@/lib/utils";
 import { listsKey, itemsKey } from "@/lib/queryOptions";

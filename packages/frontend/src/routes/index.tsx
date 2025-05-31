@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { Link, createFileRoute } from "@tanstack/react-router";
 
-import { useLandingBackdrop } from "@/hooks/useLandingBackdrop";
+import { useLandingBackdrop } from "@/lib/hooks/useLandingBackdrop";
 import ThemeToggle from "@/components/ThemeToggle";
 
 export const Route = createFileRoute("/")({

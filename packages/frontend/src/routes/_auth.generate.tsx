@@ -19,8 +19,8 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Spinner } from "@/components/Spinner";
 import PendingRoute from "@/components/PendingRoute";
-import { useIsMobile } from "@/hooks/useIsMobile";
-import useScrollHideNav from "@/hooks/useScrollHideNav";
+import { useIsMobile } from "@/lib/hooks/useIsMobile";
+import useScrollHideNav from "@/lib/hooks/useScrollHideNav";
 import { SidebarRightContext } from "@/shared/SidebarRightContext";
 import { generateList } from "@/lib/actions/generate";
 import { queryClient } from "@/lib/queryClient";
@@ -277,7 +277,7 @@ function RouteComponent() {
                       <div className="text-left">
                         <p className="font-medium">Upload screenshot</p>
                         <p className="text-sm text-muted-foreground">
-                          Upload an image of a recipe or item list
+                          Upload an image of a recipe or list
                         </p>
                       </div>
                     </Button>

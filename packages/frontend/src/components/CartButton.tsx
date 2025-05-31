@@ -5,7 +5,7 @@ import clsx from "clsx";
 
 import { useSidebar } from "@/components/ui/sidebar";
 import { SidebarRightContext } from "@/shared/SidebarRightContext";
-import { useIsMobile } from "@/hooks/useIsMobile";
+import { useIsMobile } from "@/lib/hooks/useIsMobile";
 
 function CartButton() {
   const sidebarRightContext = useContext(SidebarRightContext);

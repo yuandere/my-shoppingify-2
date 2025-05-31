@@ -1,6 +1,6 @@
 import { clsx } from "clsx";
 import { Spinner } from "./Spinner";
-import { useIsMobile } from "@/hooks/useIsMobile";
+import { useIsMobile } from "@/lib/hooks/useIsMobile";
 
 function PendingRoute() {
   const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;

@@ -23,10 +23,10 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { SidebarRightContext } from "@/shared/SidebarRightContext";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/lib/hooks/useAuth";
 import ThemeToggle from "./ThemeToggle";
 import CartButton from "./CartButton";
-import { useIsMobile } from "@/hooks/useIsMobile";
+import { useIsMobile } from "@/lib/hooks/useIsMobile";
 import {
   DropdownMenu,
   DropdownMenuContent,

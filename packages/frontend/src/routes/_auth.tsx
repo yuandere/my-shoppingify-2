@@ -10,7 +10,7 @@ import { NavBar } from "@/components/NavBar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { SidebarRightProvider } from "@/shared/SidebarRightProvider";
 import { SidebarRight } from "@/components/sidebar/SidebarRight";
-import { useIsMobile } from "@/hooks/useIsMobile";
+import { useIsMobile } from "@/lib/hooks/useIsMobile";
 import {
   listsQueryOptions,
   itemsQueryOptions,

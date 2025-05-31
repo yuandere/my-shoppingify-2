@@ -1,5 +1,5 @@
 import { useContext, useEffect } from "react";
-import { SidebarRightContext } from "../shared/SidebarRightContext";
+import { SidebarRightContext } from "../../shared/SidebarRightContext";
 
 const useScrollHideNav = (scrollAreaRef: React.RefObject<HTMLDivElement>) => {
   const sidebarRightContext = useContext(SidebarRightContext);
