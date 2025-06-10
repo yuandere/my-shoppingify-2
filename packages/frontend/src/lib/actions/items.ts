@@ -1,4 +1,4 @@
-import axios from "redaxios";
+import axios from "axios";
 import { tokenHelper } from "../utils";
 import { ItemFormValues } from "@/types/schema";
 

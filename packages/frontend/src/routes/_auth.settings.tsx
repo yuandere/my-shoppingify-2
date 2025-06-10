@@ -3,7 +3,7 @@ import {
   useNavigate,
   useRouter,
 } from "@tanstack/react-router";
-import axios from "redaxios";
+import axios from "axios";
 import clsx from "clsx";
 import { toast } from "sonner";
 

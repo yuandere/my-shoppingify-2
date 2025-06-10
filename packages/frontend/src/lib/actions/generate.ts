@@ -1,4 +1,4 @@
-import axios from "redaxios";
+import axios from "axios";
 import { tokenHelper } from "../utils";
 
 export interface IMethod {
