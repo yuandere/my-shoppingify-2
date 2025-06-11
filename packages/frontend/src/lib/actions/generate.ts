@@ -1,4 +1,4 @@
-import axios from "axios";
+import apiClient from "../api-client";
 import { tokenHelper } from "../utils";
 
 export interface IMethod {
@@ -26,9 +26,9 @@ export const generateList = async ({ ...props }: IGenerateList) => {
   if (image !== undefined && image !== null) formData.append("image", image);
   try {
     const token = await tokenHelper();
-    return axios({
+    return apiClient({
       method: "POST",
-      url: import.meta.env.VITE_BACKEND_URL + `/api/v1/generate/${method}`,
+      url: `/api/v1/generate/${method}`,
       data: formData,
       headers: {
         authorization: "Bearer " + token,

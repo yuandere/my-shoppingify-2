@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
-import axios from "axios";
 
+import apiClient from "./api-client";
 import { tokenHelper } from "./utils";
 import type {
   Item,
@@ -14,9 +14,9 @@ dayjs.extend(localizedFormat);
 
 export const fetchCategories = async () => {
   const token = await tokenHelper();
-  const { data } = await axios({
+  const { data } = await apiClient({
     method: "GET",
-    url: import.meta.env.VITE_BACKEND_URL + "/api/v1/categories",
+    url: "/api/v1/categories",
     headers: { Authorization: `Bearer ${token}` },
   });
   return [{ id: 0, name: "Uncategorized" }, ...(data as Category[])];
@@ -24,9 +24,9 @@ export const fetchCategories = async () => {
 
 export const fetchItems = async () => {
   const token = await tokenHelper();
-  const { data } = await axios({
+  const { data } = await apiClient({
     method: "GET",
-    url: import.meta.env.VITE_BACKEND_URL + "/api/v1/items",
+    url: "/api/v1/items",
     headers: { Authorization: `Bearer ${token}` },
   });
   return data as Item[];
@@ -34,9 +34,9 @@ export const fetchItems = async () => {
 
 export const fetchLists = async () => {
   const token = await tokenHelper();
-  const { data } = await axios({
+  const { data } = await apiClient({
     method: "GET",
-    url: import.meta.env.VITE_BACKEND_URL + "/api/v1/lists",
+    url: "/api/v1/lists",
     headers: { Authorization: `Bearer ${token}` },
   });
   const lists = data as ListsViewList[];
@@ -49,9 +49,9 @@ export const fetchLists = async () => {
 
 export const fetchListItems = async (listId: string) => {
   const token = await tokenHelper();
-  const { data } = await axios({
+  const { data } = await apiClient({
     method: "GET",
-    url: import.meta.env.VITE_BACKEND_URL + `/api/v1/listItems/${listId}`,
+    url: `/api/v1/listItems/${listId}`,
     headers: { Authorization: `Bearer ${token}` },
   });
   return data as ListItem[];

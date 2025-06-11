@@ -1,4 +1,4 @@
-import axios from "axios";
+import apiClient from "../api-client";
 import { tokenHelper } from "../utils";
 import { ItemFormValues } from "@/types/schema";
 
@@ -7,9 +7,9 @@ export const addItem = async (newItemData: ItemFormValues) => {
     const token = await tokenHelper();
     if (newItemData.category_id === 0) newItemData.category_id = null;
     if (newItemData.image_url === "") newItemData.image_url = null;
-    return axios({
+    return apiClient({
       method: "POST",
-      url: import.meta.env.VITE_BACKEND_URL + "/api/v1/items",
+      url: "/api/v1/items",
       data: newItemData,
       headers: {
         authorization: "Bearer " + token,
@@ -23,9 +23,9 @@ export const addItem = async (newItemData: ItemFormValues) => {
 export const deleteItem = async (itemId: number) => {
   try {
     const token = await tokenHelper();
-    return axios({
+    return apiClient({
       method: "DELETE",
-      url: import.meta.env.VITE_BACKEND_URL + "/api/v1/items/" + itemId,
+      url: "/api/v1/items/" + itemId,
       headers: {
         authorization: "Bearer " + token,
       },
@@ -43,9 +43,9 @@ export const updateItem = async (
     const token = await tokenHelper();
     if (updatedItemData.category_id === 0) updatedItemData.category_id = null;
     if (updatedItemData.image_url === "") updatedItemData.image_url = null;
-    return axios({
+    return apiClient({
       method: "PUT",
-      url: import.meta.env.VITE_BACKEND_URL + "/api/v1/items/" + itemId,
+      url: "/api/v1/items/" + itemId,
       data: updatedItemData,
       headers: {
         authorization: "Bearer " + token,

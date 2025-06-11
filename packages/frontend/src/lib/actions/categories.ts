@@ -1,4 +1,4 @@
-import axios from "axios";
+import apiClient from "../api-client";
 import { tokenHelper } from "../utils";
 import type { Category } from "@/types/dashboard";
 
@@ -7,9 +7,9 @@ export const addCategory = async (
 ): Promise<{ data: Category }> => {
   try {
     const token = await tokenHelper();
-    return axios({
+    return apiClient({
       method: "POST",
-      url: import.meta.env.VITE_BACKEND_URL + "/api/v1/categories",
+      url: "/api/v1/categories",
       data: { name: newCategoryName },
       headers: {
         authorization: "Bearer " + token,
@@ -23,10 +23,9 @@ export const addCategory = async (
 export const deleteCategory = async (categoryId: number) => {
   try {
     const token = await tokenHelper();
-    return axios({
+    return apiClient({
       method: "DELETE",
-      url:
-        import.meta.env.VITE_BACKEND_URL + "/api/v1/categories/" + categoryId,
+      url: "/api/v1/categories/" + categoryId,
       headers: {
         authorization: "Bearer " + token,
       },

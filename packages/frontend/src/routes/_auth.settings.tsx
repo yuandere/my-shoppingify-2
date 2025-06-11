@@ -3,7 +3,6 @@ import {
   useNavigate,
   useRouter,
 } from "@tanstack/react-router";
-import axios from "axios";
 import clsx from "clsx";
 import { toast } from "sonner";
 
@@ -22,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import PendingRoute from "@/components/PendingRoute";
+import apiClient from "@/lib/api-client";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { useIsMobile } from "@/lib/hooks/useIsMobile";
 import { tokenHelper } from "@/lib/utils";
@@ -49,9 +49,9 @@ function RouteComponent() {
     try {
       const token = await tokenHelper();
       Promise.resolve(
-        await axios({
+        await apiClient({
           method: "DELETE",
-          url: import.meta.env.VITE_BACKEND_URL + `/api/v1/auth/delete`,
+          url: `/api/v1/auth/delete`,
           headers: { Authorization: `Bearer ${token}` },
         })
       );

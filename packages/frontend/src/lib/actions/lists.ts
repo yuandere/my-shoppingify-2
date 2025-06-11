@@ -1,13 +1,13 @@
-import axios from "axios";
+import apiClient from "../api-client";
 import { tokenHelper } from "../utils";
 import type { Item } from "@/types/dashboard";
 
 export const completeList = async (listId: string, completed: boolean) => {
   try {
     const token = await tokenHelper();
-    const { data } = await axios({
+    const { data } = await apiClient({
       method: "PUT",
-      url: import.meta.env.VITE_BACKEND_URL + `/api/v1/lists/${listId}`,
+      url: `/api/v1/lists/${listId}`,
       headers: { Authorization: `Bearer ${token}` },
       data: { completed: completed },
     });
@@ -20,9 +20,9 @@ export const completeList = async (listId: string, completed: boolean) => {
 export const createList = async (item?: Item) => {
   try {
     const token = await tokenHelper();
-    const { data } = await axios({
+    const { data } = await apiClient({
       method: "POST",
-      url: import.meta.env.VITE_BACKEND_URL + "/api/v1/lists",
+      url: "/api/v1/lists",
       headers: { Authorization: `Bearer ${token}` },
       data: { item: item || null },
     });
@@ -35,9 +35,9 @@ export const createList = async (item?: Item) => {
 export const deleteList = async (listId: string) => {
   try {
     const token = await tokenHelper();
-    const { data } = await axios({
+    const { data } = await apiClient({
       method: "DELETE",
-      url: import.meta.env.VITE_BACKEND_URL + `/api/v1/lists/${listId}`,
+      url: `/api/v1/lists/${listId}`,
       headers: { Authorization: `Bearer ${token}` },
     });
     return data;
@@ -49,9 +49,9 @@ export const deleteList = async (listId: string) => {
 export const renameList = async (listId: string, newListName: string) => {
   try {
     const token = await tokenHelper();
-    const { data } = await axios({
+    const { data } = await apiClient({
       method: "PUT",
-      url: import.meta.env.VITE_BACKEND_URL + `/api/v1/lists/${listId}`,
+      url: `/api/v1/lists/${listId}`,
       headers: { Authorization: `Bearer ${token}` },
       data: { name: newListName },
     });

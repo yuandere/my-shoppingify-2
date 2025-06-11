@@ -1,4 +1,4 @@
-import axios from "axios";
+import apiClient from "../api-client";
 import { tokenHelper } from "../utils";
 
 interface ICreateListItem {
@@ -15,9 +15,9 @@ export const createListItem = async ({
 }: ICreateListItem) => {
   try {
     const token = await tokenHelper();
-    const { data } = await axios({
+    const { data } = await apiClient({
       method: "POST",
-      url: import.meta.env.VITE_BACKEND_URL + "/api/v1/listItems",
+      url: "/api/v1/listItems",
       data: { itemId, itemName, category_name, listId },
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -31,9 +31,9 @@ export const createListItem = async ({
 export const deleteListItem = async (listItemId: number) => {
   try {
     const token = await tokenHelper();
-    const { data } = await axios({
+    const { data } = await apiClient({
       method: "DELETE",
-      url: import.meta.env.VITE_BACKEND_URL + `/api/v1/listItems/${listItemId}`,
+      url: `/api/v1/listItems/${listItemId}`,
       headers: { Authorization: `Bearer ${token}` },
     });
     return data;
@@ -55,9 +55,9 @@ export const updateListItem = async ({
 }: IUpdateListItem) => {
   try {
     const token = await tokenHelper();
-    const { data } = await axios({
+    const { data } = await apiClient({
       method: "PUT",
-      url: import.meta.env.VITE_BACKEND_URL + `/api/v1/listItems/${listItemId}`,
+      url: `/api/v1/listItems/${listItemId}`,
       headers: { Authorization: `Bearer ${token}` },
       data: { quantity, checked },
     });
