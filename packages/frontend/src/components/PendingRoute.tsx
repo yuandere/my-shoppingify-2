@@ -8,7 +8,7 @@ function PendingRoute() {
   return (
     <div
       className={clsx(
-        "flex h-screen flex-col items-center justify-center bg-background",
+        "flex h-screen items-center justify-center bg-background",
         isDarkMode && "bg-[hsl(0,0%,3.9%)]",
         isMobile && "h-[calc(100vh-4rem)]"
       )}

@@ -57,7 +57,6 @@ function RouteComponent() {
     if (generating) return;
     setGenerating(true);
     try {
-      //@ts-expect-error res has type Response<unknown>
       const res: {
         data: { success: boolean; message: string; newListId: string | null };
       } = await generateList({
