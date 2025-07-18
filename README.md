@@ -32,7 +32,7 @@ generation and stats at a glance.
 - **Completion Tracking**: Track progress with a simple toggle to mark items and lists as done.
 - **AI-Powered List Generation**: Generate shopping lists using prompts, URLs, or uploaded images.
 - **Stats at a Glance**: View key metrics like total items, completed tasks, and list progress on demand.
-- **Responsive Design**: Built with TailwindCSS and Shadcn UI components for a clean, modern interface.
+- **Responsive Design**: Built with TailwindCSS and shadcn/ui components for a clean, modern interface.
 
 <!-- Tech Stack -->
 
@@ -47,7 +47,7 @@ generation and stats at a glance.
 | **Cloudflare Workers** | Serverless backend for API endpoints.                         |
 | **Hono.js**            | Lightweight backend framework for API endpoints.              |
 | **Zod**                | Schema validation for data integrity.                         |
-| **Shadcn UI**          | Reusable UI components for a polished look.                   |
+| **shadcn/ui**          | Reusable UI components for a polished look.                   |
 | **TailwindCSS**        | Utility-first CSS framework for styling.                      |
 | **TypeScript**         | Static typing for robust code structure.                      |
 | **Gemini 1.5 Flash**   | Low-cost multimodal LLM for simple tasks and data processing. |
@@ -105,9 +105,9 @@ VITE_SUPABASE_ANON_KEY=your-anon-key
 bun run dev
 ```
 
-## Notes
+## Potential Areas for Improvement
 
-- **AI Generation**: Gemini 1.5 Flash may not generate items and lists with 100% accuracy, especially for site URLs or images.
+- **Optimistic UI**: A local-first approach utilizing a sync engine to provide a more responsive and offline-friendly user experience.
 
 ## Contributing
 
