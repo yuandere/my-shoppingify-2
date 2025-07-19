@@ -36,22 +36,35 @@ function HomeComponent() {
           </p>
 
           <div className="grid gap-6 md:grid-cols-2 max-w-xs mx-auto">
-            <Link
-              to="/items"
-              className="transform hover:scale-105 transition-all duration-200 bg-card shadow-lg rounded-xl p-3 hover:border hover:border-[var(--accent-color)] hover:shadow-xl backdrop-blur-sm border border-border/50"
-            >
-              <h2 className="text-xl font-semibold mb-2 bg-gradient-to-r from-orange-500 to-pink-500 dark:from-orange-600 dark:to-pink-600 text-transparent bg-clip-text">
-                App
-              </h2>
-            </Link>
-            <a
-              href="https://github.com/yuandere/my-shoppingify-2"
-              className="transform hover:scale-105 transition-all duration-200 bg-card shadow-lg rounded-xl p-3 hover:border hover:border-[var(--accent-color)] hover:shadow-xl backdrop-blur-sm border border-border/50"
-            >
-              <h2 className="text-xl font-semibold mb-2 bg-gradient-to-r from-orange-500 to-pink-500 dark:from-orange-600 dark:to-pink-600 text-transparent bg-clip-text">
-                About
-              </h2>
-            </a>
+            <div className="relative">
+              <div className="absolute -z-10 rounded-xl -translate-x-1 -translate-y-1 inset-0 bg-gradient-to-r from-orange-500 to-pink-500 dark:from-orange-600 dark:to-pink-600" />
+              <Link
+                to="/items"
+                className="relative group transform transition-all duration-200 bg-card shadow-lg rounded-xl p-3 hover:-translate-x-1 hover:-translate-y-1 hover:border hover:border-[var(--accent-color)] hover:shadow-xl backdrop-blur-sm border border-border/50 block"
+              >
+                <h2 className="text-xl font-semibold mb-2 bg-gradient-to-r from-orange-500 to-pink-500 dark:from-orange-600 dark:to-pink-600 text-transparent bg-clip-text">
+                  App
+                </h2>
+                <div className="absolute inset-0 overflow-hidden rounded-xl">
+                  <span className="absolute left-[-100%] -top-[100%] h-[300%] w-1/2 bg-gradient-to-r from-transparent via-white/60 dark:via-black to-white/15 dark:to-black/15 opacity-0 rotate-45 group-hover:opacity-100 group-hover:animate-shimmer transition-opacity duration-300" />
+                </div>
+              </Link>
+            </div>
+            
+            <div className="relative">
+              <div className="absolute -z-10 rounded-xl -translate-x-1 -translate-y-1 inset-0 bg-gradient-to-r from-orange-500 to-pink-500 dark:from-orange-600 dark:to-pink-600" />
+              <a
+                href="https://github.com/yuandere/my-shoppingify-2"
+                className="relative group transform transition-all duration-200 bg-card shadow-lg rounded-xl p-3 hover:-translate-x-1 hover:-translate-y-1 hover:border hover:border-[var(--accent-color)] hover:shadow-xl backdrop-blur-sm border border-border/50 block"
+              >
+                <h2 className="text-xl font-semibold mb-2 bg-gradient-to-r from-orange-500 to-pink-500 dark:from-orange-600 dark:to-pink-600 text-transparent bg-clip-text">
+                  About
+                </h2>
+                <div className="absolute inset-0 overflow-hidden rounded-xl">
+                  <span className="absolute left-[-100%] -top-[100%] h-[300%] w-1/2 bg-gradient-to-r from-transparent via-white/60 dark:via-black to-white/15 dark:to-black/15 opacity-0 rotate-45 group-hover:opacity-100 group-hover:animate-shimmer transition-opacity duration-300" />
+                </div>
+              </a>
+            </div>
           </div>
         </div>
       </div>

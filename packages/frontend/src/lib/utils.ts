@@ -9,6 +9,16 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export function debounce(func: () => void, delay: number) {
+  let timeoutId: NodeJS.Timeout;
+  return () => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      func();
+    }, delay);
+  };
+}
+
 export function isDateAtLeast24HoursOld(isoDateString: string): boolean {
   try {
     const date = dayjs(isoDateString);
@@ -45,6 +55,7 @@ export async function loaderDelayFn<T>(
 }
 
 type CategoryObj = { category_name: string; items: Item[] };
+
 export const sortItems = (itemsData: Item[], searchTerm: string) => {
   const res: CategoryObj[] = [];
   const uncategorized: CategoryObj = {

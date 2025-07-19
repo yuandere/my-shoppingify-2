@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import Matter from "matter-js";
+import { debounce } from "@/lib/utils";
 
 export function useLandingBackdrop(
   canvasRef: React.RefObject<HTMLCanvasElement>
@@ -8,7 +9,7 @@ export function useLandingBackdrop(
     if (!canvasRef.current) return;
 
     const engine = Matter.Engine.create({
-      gravity: { x: 0, y: 0.3 },
+      gravity: { x: 0, y: 0.2 },
     });
     const render = Matter.Render.create({
       canvas: canvasRef.current,
@@ -26,32 +27,85 @@ export function useLandingBackdrop(
     const pegRadius = 5;
     const pegRows = 12;
     const pegSpacing = 55;
-    const startY = 425;
+    // const startY = 425;
 
-    // Create pegs in a triangular pattern
+    // Create pegs in the shape of a shopping cart
     const createPegs = () => {
-      const startX = window.innerWidth / 2 - (pegRows * pegSpacing) / 2 + 28;
       const newPegs: Matter.Body[] = [];
-      for (let row = 0; row < pegRows; row++) {
-        const numPegsInRow = pegRows - row;
-        for (let col = 0; col < numPegsInRow; col++) {
-          const peg = Matter.Bodies.circle(
-            startX + col * pegSpacing + (row * pegSpacing) / 2,
-            startY + row * pegSpacing,
-            pegRadius,
-            {
-              isStatic: true,
-              render: {
-                fillStyle: "#6366f1",
-                opacity: 0.3,
-              },
-              friction: 0.1,
-              restitution: 0.5,
-            }
-          );
-          newPegs.push(peg);
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight * 2 / 3;
+
+      const cartWidth = pegRows * pegSpacing * 0.8;
+      const cartHeight = cartWidth * 0.6;
+      const handleHeight = cartHeight * 0.4;
+      const wheelRadius = cartWidth * 0.08;
+
+      const basketTopY = centerY - cartHeight / 2;
+      const basketBottomY = centerY + cartHeight / 2;
+      const basketLeftX = centerX - cartWidth / 2;
+      const basketRightX = centerX + cartWidth / 2;
+
+      const createPeg = (x: number, y: number) =>
+        Matter.Bodies.circle(x, y, pegRadius, {
+          isStatic: true,
+          render: {
+            fillStyle: "#6366f1",
+            opacity: 0.3,
+          },
+          friction: 0.1,
+          restitution: 0.5,
+        });
+
+      // Basket (a trapezoid)
+      const topPegs = 10;
+      const bottomPegs = 8;
+      const basketRows = 6;
+
+      for (let i = 0; i < basketRows; i++) {
+        const t = i / (basketRows - 1);
+        const currentY = basketTopY + t * cartHeight;
+        const currentWidth = cartWidth - t * (cartWidth * 0.2);
+        const numPegsInRow = Math.round(topPegs - t * (topPegs - bottomPegs));
+
+        for (let j = 0; j < numPegsInRow; j++) {
+          const u = j / (numPegsInRow - 1 || 1);
+          const currentX =
+            centerX - currentWidth / 2 + u * currentWidth;
+          newPegs.push(createPeg(currentX, currentY));
         }
       }
+
+      // Handle
+      const handleX = basketRightX + cartWidth * 0.1;
+      const handleTopY = basketTopY - handleHeight;
+
+      for (let i = 0; i < 3; i++) {
+        const t = i / 3;
+        newPegs.push(createPeg(handleX, basketTopY - t * handleHeight));
+      }
+      for (let i = 0; i < 3; i++) {
+        const t = i / 2;
+        newPegs.push(
+          createPeg(handleX - t * (cartWidth * 0.15), handleTopY)
+        );
+      }
+
+      // Wheels
+      const wheelY = basketBottomY + wheelRadius * 1.2;
+      const wheelStructureRadius = pegSpacing / 3.5;
+
+      const createWheel = (centerX: number, centerY: number) => {
+        // A small diamond shape for the wheel
+        newPegs.push(createPeg(centerX, centerY - wheelStructureRadius)); // Top
+        newPegs.push(createPeg(centerX + wheelStructureRadius, centerY)); // Right
+        newPegs.push(createPeg(centerX, centerY + wheelStructureRadius)); // Bottom
+        newPegs.push(createPeg(centerX - wheelStructureRadius, centerY)); // Left
+      };
+
+      // Create left and right wheels
+      createWheel(basketLeftX + wheelRadius, wheelY);
+      createWheel(basketRightX - wheelRadius, wheelY);
+
       return newPegs;
     };
 
@@ -192,7 +246,7 @@ export function useLandingBackdrop(
           // Calculate opacity based on vertical position
           const fadeStart = window.innerHeight - 150;
           const opacity =
-            y > fadeStart ? Math.max(0, 1 - (y - fadeStart) / 150) : 1;
+            y > fadeStart ? Math.max(0, 0.5 - (y - fadeStart) / 150) : 0.5;
 
           // Save context state
           context.save();
@@ -221,32 +275,44 @@ export function useLandingBackdrop(
 
     // Handle window resize
     const handleResize = () => {
-      // Update canvas dimensions
+      if (!render) return;
+
+      // Update render bounds and canvas dimensions
+      render.bounds.max.x = window.innerWidth;
+      render.bounds.max.y = window.innerHeight;
+      render.options.width = window.innerWidth;
+      render.options.height = window.innerHeight;
       render.canvas.width = window.innerWidth;
       render.canvas.height = window.innerHeight;
       Matter.Render.setPixelRatio(render, window.devicePixelRatio);
 
       // Remove old pegs
-      pegs.forEach((peg) => {
-        Matter.Composite.remove(engine.world, peg);
-      });
+      Matter.Composite.remove(engine.world, pegs);
+      pegs.length = 0;
 
       // Create and add new pegs
       const newPegs = createPegs();
-      Matter.Composite.add(engine.world, newPegs);
-      pegs.length = 0;
       pegs.push(...newPegs);
+      Matter.Composite.add(engine.world, pegs);
 
       // Update wall positions
-      walls[1].position.x = window.innerWidth + wallThickness / 2;
+      Matter.Body.setPosition(walls[0], {
+        x: -wallThickness / 2,
+        y: window.innerHeight / 2,
+      });
+      Matter.Body.setPosition(walls[1], {
+        x: window.innerWidth + wallThickness / 2,
+        y: window.innerHeight / 2,
+      });
     };
 
-    window.addEventListener("resize", handleResize);
+    const debouncedHandleResize = debounce(handleResize, 250);
+    window.addEventListener("resize", debouncedHandleResize);
 
     // Cleanup
     return () => {
       clearInterval(interval);
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("resize", debouncedHandleResize);
       Matter.Runner.stop(runner);
       Matter.Render.stop(render);
       Matter.Engine.clear(engine);

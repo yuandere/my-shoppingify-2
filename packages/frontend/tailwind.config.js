@@ -22,10 +22,17 @@ export default {
             opacity: '1',
             boxShadow: '0 0 0 0 hsl(var(--primary) / 0)'
           }
+        },
+        shimmer: {
+          '100%': { 
+            transform: 'translateX(500%) rotate(45deg)',
+
+          }
         }
       },
       animation: {
-        flash: 'flash 1s cubic-bezier(0.4, 0, 0.6, 1)'
+        flash: 'flash 1s cubic-bezier(0.4, 0, 0.6, 1)',
+        shimmer: 'shimmer 0.2s linear forwards'
       },
       borderRadius: {
         lg: 'var(--radius)',
