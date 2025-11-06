@@ -6,11 +6,12 @@
   },
   "dependencies": {
     "@google/genai": "^0.7.0",
-    "cheerio": "^1.0.0",
-    "hono": "^4.7.11"
+    "cheerio": "^1.1.2",
+    "hono": "^4.10.4",
+    "@supabase/supabase-js": "^2.79.0"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20250605.0",
-    "wrangler": "^4.19.1"
+    "@cloudflare/workers-types": "^4.20251014.0",
+    "wrangler": "^4.45.4"
   }
 }

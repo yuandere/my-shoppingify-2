@@ -8,181 +8,70 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-// Import Routes
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as AuthRouteImport } from './routes/_auth'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthConfirmRouteImport } from './routes/auth.confirm'
+import { Route as AuthStatsRouteImport } from './routes/_auth.stats'
+import { Route as AuthSettingsRouteImport } from './routes/_auth.settings'
+import { Route as AuthListsRouteImport } from './routes/_auth.lists'
+import { Route as AuthItemsRouteImport } from './routes/_auth.items'
+import { Route as AuthGenerateRouteImport } from './routes/_auth.generate'
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as LoginImport } from './routes/login'
-import { Route as AboutImport } from './routes/about'
-import { Route as AuthImport } from './routes/_auth'
-import { Route as IndexImport } from './routes/index'
-import { Route as AuthConfirmImport } from './routes/auth.confirm'
-import { Route as AuthStatsImport } from './routes/_auth.stats'
-import { Route as AuthSettingsImport } from './routes/_auth.settings'
-import { Route as AuthListsImport } from './routes/_auth.lists'
-import { Route as AuthItemsImport } from './routes/_auth.items'
-import { Route as AuthGenerateImport } from './routes/_auth.generate'
-
-// Create/Update Routes
-
-const LoginRoute = LoginImport.update({
+const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const AboutRoute = AboutImport.update({
+const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const AuthRoute = AuthImport.update({
+const AuthRoute = AuthRouteImport.update({
   id: '/_auth',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const IndexRoute = IndexImport.update({
+const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const AuthConfirmRoute = AuthConfirmImport.update({
+const AuthConfirmRoute = AuthConfirmRouteImport.update({
   id: '/auth/confirm',
   path: '/auth/confirm',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const AuthStatsRoute = AuthStatsImport.update({
+const AuthStatsRoute = AuthStatsRouteImport.update({
   id: '/stats',
   path: '/stats',
   getParentRoute: () => AuthRoute,
 } as any)
-
-const AuthSettingsRoute = AuthSettingsImport.update({
+const AuthSettingsRoute = AuthSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
   getParentRoute: () => AuthRoute,
 } as any)
-
-const AuthListsRoute = AuthListsImport.update({
+const AuthListsRoute = AuthListsRouteImport.update({
   id: '/lists',
   path: '/lists',
   getParentRoute: () => AuthRoute,
 } as any)
-
-const AuthItemsRoute = AuthItemsImport.update({
+const AuthItemsRoute = AuthItemsRouteImport.update({
   id: '/items',
   path: '/items',
   getParentRoute: () => AuthRoute,
 } as any)
-
-const AuthGenerateRoute = AuthGenerateImport.update({
+const AuthGenerateRoute = AuthGenerateRouteImport.update({
   id: '/generate',
   path: '/generate',
   getParentRoute: () => AuthRoute,
 } as any)
 
-// Populate the FileRoutesByPath interface
-
-declare module '@tanstack/react-router' {
-  interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/_auth': {
-      id: '/_auth'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof AuthImport
-      parentRoute: typeof rootRoute
-    }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutImport
-      parentRoute: typeof rootRoute
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginImport
-      parentRoute: typeof rootRoute
-    }
-    '/_auth/generate': {
-      id: '/_auth/generate'
-      path: '/generate'
-      fullPath: '/generate'
-      preLoaderRoute: typeof AuthGenerateImport
-      parentRoute: typeof AuthImport
-    }
-    '/_auth/items': {
-      id: '/_auth/items'
-      path: '/items'
-      fullPath: '/items'
-      preLoaderRoute: typeof AuthItemsImport
-      parentRoute: typeof AuthImport
-    }
-    '/_auth/lists': {
-      id: '/_auth/lists'
-      path: '/lists'
-      fullPath: '/lists'
-      preLoaderRoute: typeof AuthListsImport
-      parentRoute: typeof AuthImport
-    }
-    '/_auth/settings': {
-      id: '/_auth/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof AuthSettingsImport
-      parentRoute: typeof AuthImport
-    }
-    '/_auth/stats': {
-      id: '/_auth/stats'
-      path: '/stats'
-      fullPath: '/stats'
-      preLoaderRoute: typeof AuthStatsImport
-      parentRoute: typeof AuthImport
-    }
-    '/auth/confirm': {
-      id: '/auth/confirm'
-      path: '/auth/confirm'
-      fullPath: '/auth/confirm'
-      preLoaderRoute: typeof AuthConfirmImport
-      parentRoute: typeof rootRoute
-    }
-  }
-}
-
-// Create and export the route tree
-
-interface AuthRouteChildren {
-  AuthGenerateRoute: typeof AuthGenerateRoute
-  AuthItemsRoute: typeof AuthItemsRoute
-  AuthListsRoute: typeof AuthListsRoute
-  AuthSettingsRoute: typeof AuthSettingsRoute
-  AuthStatsRoute: typeof AuthStatsRoute
-}
-
-const AuthRouteChildren: AuthRouteChildren = {
-  AuthGenerateRoute: AuthGenerateRoute,
-  AuthItemsRoute: AuthItemsRoute,
-  AuthListsRoute: AuthListsRoute,
-  AuthSettingsRoute: AuthSettingsRoute,
-  AuthStatsRoute: AuthStatsRoute,
-}
-
-const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
-
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '': typeof AuthRouteWithChildren
   '/about': typeof AboutRoute
   '/login': typeof LoginRoute
   '/generate': typeof AuthGenerateRoute
@@ -192,10 +81,8 @@ export interface FileRoutesByFullPath {
   '/stats': typeof AuthStatsRoute
   '/auth/confirm': typeof AuthConfirmRoute
 }
-
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '': typeof AuthRouteWithChildren
   '/about': typeof AboutRoute
   '/login': typeof LoginRoute
   '/generate': typeof AuthGenerateRoute
@@ -205,9 +92,8 @@ export interface FileRoutesByTo {
   '/stats': typeof AuthStatsRoute
   '/auth/confirm': typeof AuthConfirmRoute
 }
-
 export interface FileRoutesById {
-  __root__: typeof rootRoute
+  __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_auth': typeof AuthRouteWithChildren
   '/about': typeof AboutRoute
@@ -219,12 +105,10 @@ export interface FileRoutesById {
   '/_auth/stats': typeof AuthStatsRoute
   '/auth/confirm': typeof AuthConfirmRoute
 }
-
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | ''
     | '/about'
     | '/login'
     | '/generate'
@@ -236,7 +120,6 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | ''
     | '/about'
     | '/login'
     | '/generate'
@@ -259,7 +142,6 @@ export interface FileRouteTypes {
     | '/auth/confirm'
   fileRoutesById: FileRoutesById
 }
-
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRouteWithChildren
@@ -268,6 +150,99 @@ export interface RootRouteChildren {
   AuthConfirmRoute: typeof AuthConfirmRoute
 }
 
+declare module '@tanstack/react-router' {
+  interface FileRoutesByPath {
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_auth': {
+      id: '/_auth'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/confirm': {
+      id: '/auth/confirm'
+      path: '/auth/confirm'
+      fullPath: '/auth/confirm'
+      preLoaderRoute: typeof AuthConfirmRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_auth/stats': {
+      id: '/_auth/stats'
+      path: '/stats'
+      fullPath: '/stats'
+      preLoaderRoute: typeof AuthStatsRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/settings': {
+      id: '/_auth/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthSettingsRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/lists': {
+      id: '/_auth/lists'
+      path: '/lists'
+      fullPath: '/lists'
+      preLoaderRoute: typeof AuthListsRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/items': {
+      id: '/_auth/items'
+      path: '/items'
+      fullPath: '/items'
+      preLoaderRoute: typeof AuthItemsRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/generate': {
+      id: '/_auth/generate'
+      path: '/generate'
+      fullPath: '/generate'
+      preLoaderRoute: typeof AuthGenerateRouteImport
+      parentRoute: typeof AuthRoute
+    }
+  }
+}
+
+interface AuthRouteChildren {
+  AuthGenerateRoute: typeof AuthGenerateRoute
+  AuthItemsRoute: typeof AuthItemsRoute
+  AuthListsRoute: typeof AuthListsRoute
+  AuthSettingsRoute: typeof AuthSettingsRoute
+  AuthStatsRoute: typeof AuthStatsRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthGenerateRoute: AuthGenerateRoute,
+  AuthItemsRoute: AuthItemsRoute,
+  AuthListsRoute: AuthListsRoute,
+  AuthSettingsRoute: AuthSettingsRoute,
+  AuthStatsRoute: AuthStatsRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRouteWithChildren,
@@ -275,66 +250,6 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   AuthConfirmRoute: AuthConfirmRoute,
 }
-
-export const routeTree = rootRoute
+export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-/* ROUTE_MANIFEST_START
-{
-  "routes": {
-    "__root__": {
-      "filePath": "__root.tsx",
-      "children": [
-        "/",
-        "/_auth",
-        "/about",
-        "/login",
-        "/auth/confirm"
-      ]
-    },
-    "/": {
-      "filePath": "index.tsx"
-    },
-    "/_auth": {
-      "filePath": "_auth.tsx",
-      "children": [
-        "/_auth/generate",
-        "/_auth/items",
-        "/_auth/lists",
-        "/_auth/settings",
-        "/_auth/stats"
-      ]
-    },
-    "/about": {
-      "filePath": "about.tsx"
-    },
-    "/login": {
-      "filePath": "login.tsx"
-    },
-    "/_auth/generate": {
-      "filePath": "_auth.generate.tsx",
-      "parent": "/_auth"
-    },
-    "/_auth/items": {
-      "filePath": "_auth.items.tsx",
-      "parent": "/_auth"
-    },
-    "/_auth/lists": {
-      "filePath": "_auth.lists.tsx",
-      "parent": "/_auth"
-    },
-    "/_auth/settings": {
-      "filePath": "_auth.settings.tsx",
-      "parent": "/_auth"
-    },
-    "/_auth/stats": {
-      "filePath": "_auth.stats.tsx",
-      "parent": "/_auth"
-    },
-    "/auth/confirm": {
-      "filePath": "auth.confirm.tsx"
-    }
-  }
-}
-ROUTE_MANIFEST_END */
