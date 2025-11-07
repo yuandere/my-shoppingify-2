@@ -42,11 +42,6 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   {
-    title: "Generate",
-    to: "/generate",
-    icon: WandSparkles,
-  },
-  {
     title: "Items",
     to: "/items",
     icon: SquareMousePointer,
@@ -55,6 +50,11 @@ const navItems: NavItem[] = [
     title: "Lists",
     to: "/lists",
     icon: ListCheck,
+  },
+  {
+    title: "Generate",
+    to: "/generate",
+    icon: WandSparkles,
   },
   {
     title: "Stats",
